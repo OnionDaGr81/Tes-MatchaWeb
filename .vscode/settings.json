@@ -1,0 +1,15 @@
+{
+    "java.project.sourcePaths": [
+        "src",
+        "matchaweb/src/main/java/matcha/Main"
+    ],
+    "java.project.referencedLibraries": {
+        "include": [
+            "lib\\gson-2.14.0.jar",
+            "lib/mysql-connector-j-9.7.0.jar"
+        ],
+        "exclude": [
+            "lib/gson-2.14.0.jar"
+        ]
+    }
+}
