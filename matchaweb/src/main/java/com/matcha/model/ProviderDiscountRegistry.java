@@ -1,4 +1,4 @@
-package matcha.model;
+package com.matcha.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ public class ProviderDiscountRegistry {
     // Daftar semua aturan diskon event yang terdaftar oleh provider
     private final List<DiscountRule> eventDiscounts = new ArrayList<>();
 
+    // Constructor privat dengan seed data otomatis menyesuaikan tahun saat ini
     private ProviderDiscountRegistry() {
         int year = LocalDate.now().getYear();
 
@@ -39,7 +40,9 @@ public class ProviderDiscountRegistry {
         ));
     }
 
-    // Ambil instance — synchronized agar aman jika diakses bersamaan
+    /**
+     * Ambil instance — synchronized agar thread-safe saat diakses runtime backend
+     */
     public static synchronized ProviderDiscountRegistry getInstance() {
         if (instance == null) {
             instance = new ProviderDiscountRegistry();
@@ -47,26 +50,43 @@ public class ProviderDiscountRegistry {
         return instance;
     }
 
-    // Admin menambahkan event diskon baru ke registry
+    /**
+     * Menyimpan aturan event diskon baru dari admin ke dalam registry
+     */
     public void addEventDiscount(DiscountRule rule) {
-        if (rule != null) eventDiscounts.add(rule);
+        if (rule != null) {
+            eventDiscounts.add(rule);
+        }
     }
 
-    // Admin menghapus event diskon berdasarkan ID-nya
+    /**
+     * Menghapus event diskon berdasarkan ID-nya secara aman
+     */
     public boolean removeEventDiscount(String ruleId) {
-        return eventDiscounts.removeIf(r -> r.getRuleId().equals(ruleId));
+        if (ruleId == null) {
+            return false;
+        }
+        return eventDiscounts.removeIf(r -> ruleId.equalsIgnoreCase(r.getRuleId()));
     }
 
-    // Ambil semua diskon yang sedang aktif pada tanggal tertentu
+    /**
+     * Mendapatkan daftar diskon yang sedang aktif pada tanggal tertentu
+     */
     public List<DiscountRule> getActiveDiscounts(LocalDate date) {
         List<DiscountRule> active = new ArrayList<>();
-        for (DiscountRule rule : eventDiscounts) {
-            if (rule.isActiveOn(date)) active.add(rule);
+        if (date != null) {
+            for (DiscountRule rule : eventDiscounts) {
+                if (rule.isActiveOn(date)) {
+                    active.add(rule);
+                }
+            }
         }
         return Collections.unmodifiableList(active);
     }
 
-    // Ambil seluruh daftar diskon untuk keperluan tampilan Admin panel
+    /**
+     * Mengambil seluruh daftar diskon untuk keperluan manajemen data backend
+     */
     public List<DiscountRule> getAllDiscounts() {
         return Collections.unmodifiableList(eventDiscounts);
     }

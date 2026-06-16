@@ -1,4 +1,4 @@
-package matcha.model;
+package com.matcha.model;
 
 import java.time.LocalDate;
 
@@ -26,8 +26,9 @@ public class DiscountRule {
     public DiscountRule(String ruleId, String label, double percentage,
                         LocalDate validFrom, LocalDate validUntil) {
         // Validasi persentase harus antara 0% sampai 100%
-        if (percentage < 0 || percentage > 1.0)
+        if (percentage < 0.0 || percentage > 1.0) {
             throw new IllegalArgumentException("[DiscountRule] Persentase harus antara 0.0 dan 1.0. Nilai: " + percentage);
+        }
         this.ruleId = ruleId;
         this.label = label;
         this.percentage = percentage;
@@ -41,8 +42,9 @@ public class DiscountRule {
     public DiscountRule(String ruleId, String label, double percentage,
                         String activityKeyword) {
         // Validasi persentase harus antara 0% sampai 100%
-        if (percentage < 0 || percentage > 1.0)
+        if (percentage < 0.0 || percentage > 1.0) {
             throw new IllegalArgumentException("[DiscountRule] Persentase harus antara 0.0 dan 1.0. Nilai: " + percentage);
+        }
         this.ruleId = ruleId;
         this.label = label;
         this.percentage = percentage;
@@ -52,24 +54,62 @@ public class DiscountRule {
         this.activityKeyword = activityKeyword;
     }
 
-    // Cek apakah diskon event ini aktif pada tanggal tertentu
+    /**
+     * Cek apakah diskon event ini aktif pada tanggal tertentu
+     */
     public boolean isActiveOn(LocalDate date) {
-        if (type != DiscountType.PROVIDER_EVENT) return false;
-        if (validFrom != null && date.isBefore(validFrom)) return false;
-        if (validUntil != null && date.isAfter(validUntil)) return false;
+        if (type != DiscountType.PROVIDER_EVENT) {
+            return false;
+        }
+        if (validFrom != null && date.isBefore(validFrom)) {
+            return false;
+        }
+        if (validUntil != null && date.isAfter(validUntil)) {
+            return false;
+        }
         return true;
     }
 
-    // Cek apakah nama layanan cocok dengan kata kunci aktivitas talent
+    /**
+     * Cek apakah nama layanan cocok dengan kata kunci aktivitas talent
+     */
     public boolean matchesActivity(String serviceName) {
-        if (type != DiscountType.TALENT_ACTIVITY) return false;
-        if (activityKeyword == null || serviceName == null) return false;
+        if (type != DiscountType.TALENT_ACTIVITY) {
+            return false;
+        }
+        if (activityKeyword == null || serviceName == null) {
+            return false;
+        }
         return serviceName.toLowerCase().contains(activityKeyword.toLowerCase());
     }
 
-    public String getRuleId()          { return ruleId; }
-    public String getLabel()           { return label; }
-    public double getPercentage()      { return percentage; }
-    public DiscountType getType()      { return type; }
-    public String getActivityKeyword() { return activityKeyword; }
+    // ================= GETTER =================
+
+    public String getRuleId() { 
+        return ruleId; 
+    }
+    
+    public String getLabel() { 
+        return label; 
+    }
+    
+    public double getPercentage() { 
+        return percentage; 
+    }
+    
+    public DiscountType getType() { 
+        return type; 
+    }
+    
+    public LocalDate getValidFrom() {
+        return validFrom;
+    }
+
+    public LocalDate getValidUntil() {
+        return validUntil;
+    }
+
+    public String getActivityKeyword() { 
+        return activityKeyword; 
+    }
 }
