@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package matcha.model;
+package com.matcha.model;
 
 /**
  *
@@ -14,10 +14,9 @@ public class Service {
     private double baseRate;
     private String deskripsi;
 
-    public double getRate() {
-        // TODO: Kembalikan nilai baseRate, bisa ditambahkan logika polimorfisme nanti
-        return baseRate;
-    }
+   public double getRate() {
+    return baseRate;
+}
 
    public String getServiceDetails() {
         // Menggabungkan nama dan deskripsi agar rapi saat dicetak

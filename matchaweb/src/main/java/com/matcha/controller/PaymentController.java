@@ -1,9 +1,9 @@
 package com.matcha.controller;
 
-import com.model.Payment;
-import com.model.Invoice;
-import com.model.DiscountRule;
-import com.model.ProviderDiscountRegistry;
+import com.matcha.model.Payment;
+import com.matcha.model.Invoice;
+import com.matcha.model.DiscountRule;
+import com.matcha.model.ProviderDiscountRegistry;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +76,7 @@ public class PaymentController {
      */
     public Payment findPaymentById(String paymentId) {
         for (Payment payment : paymentList) {
-            if (payment.getPaymentId().equalsIgnoreCase(paymentId)) {
+            if (payment.getId().equalsIgnoreCase(paymentId)) {
                 return payment;
             }
         }

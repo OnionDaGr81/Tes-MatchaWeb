@@ -3,6 +3,8 @@ package com.matcha.model;
 import java.time.LocalDateTime;
 
 public class Booking {
+    public static final String STATUS_COMPLETED = "COMPLETED";
+    
     private String id;
     private String clientId;
     private String talentId;

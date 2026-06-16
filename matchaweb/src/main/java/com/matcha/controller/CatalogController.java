@@ -90,4 +90,19 @@ public class CatalogController {
             ));
         }}
     
+// GET /api/services
+public void getAllServices(Context ctx) {
+    try {
+        List<ServiceItem> services = catalogService.getAllServices();
+        ctx.status(200).json(Map.of(
+            "status", "success",
+            "data", services
+        ));
+    } catch (Exception e) {
+        ctx.status(500).json(Map.of(
+            "status", "error",
+            "message", "Gagal mengambil daftar layanan."
+        ));
+    }
+}
 }

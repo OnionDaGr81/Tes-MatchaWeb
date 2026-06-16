@@ -1,4 +1,4 @@
-package matcha.model;
+package com.matcha.model; 
 
 /**
  *

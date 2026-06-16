@@ -102,4 +102,24 @@ public class CatalogRepository {
         }
         return service;
     }
+        public List<ServiceItem> getAllServices() {
+        List<ServiceItem> services = new ArrayList<>();
+        String sql = "SELECT * FROM services";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                ServiceItem item = new ServiceItem();
+                item.setId(rs.getString("id"));
+                item.setTalentId(rs.getString("talent_id"));
+                item.setNamaLayanan(rs.getString("nama_layanan"));
+                item.setTarifDasar(rs.getDouble("tarif_dasar"));
+                item.setDeskripsi(rs.getString("deskripsi"));
+                services.add(item);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return services;
+    }
 }

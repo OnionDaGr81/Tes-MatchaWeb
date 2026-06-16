@@ -4,6 +4,7 @@ import com.matcha.model.Booking;
 import com.matcha.service.BookingService;
 import io.javalin.http.Context;
 import java.util.Map;
+import java.util.List;
 
 public class BookingController {
     
@@ -36,6 +37,36 @@ public class BookingController {
                 "status", "error",
                 "message", e.getMessage() != null ? e.getMessage() : "Gagal membuat pesanan. Pastikan format data benar."
             ));
+        }
+    }
+    // GET /api/bookings
+    public void getAllBookings(Context ctx) {
+        try {
+            List<Booking> bookings = bookingService.getAllBookings();
+            ctx.status(200).json(Map.of(
+                "status", "success",
+                "data", bookings
+            ));
+        } catch (Exception e) {
+            ctx.status(500).json(Map.of(
+                "status", "error",
+                "message", "Gagal mengambil data booking."
+            ));
+        }
+    }
+
+    // GET /api/bookings/{bookingId}
+    public void getBookingById(Context ctx) {
+        try {
+            String bookingId = ctx.pathParam("bookingId");
+            Booking booking = bookingService.getBookingById(bookingId);
+            if (booking != null) {
+                ctx.status(200).json(Map.of("status", "success", "data", booking));
+            } else {
+                ctx.status(404).json(Map.of("status", "error", "message", "Booking tidak ditemukan."));
+            }
+        } catch (Exception e) {
+            ctx.status(500).json(Map.of("status", "error", "message", "Gagal mengambil data booking."));
         }
     }
 }

@@ -46,12 +46,15 @@ public class MatchaApp {
                     });
                     
                     path("services", () -> {
+                        get(ctx -> catalogController.getAllServices(ctx));       // ← tambah ini
                         get("{serviceId}", ctx -> catalogController.getServiceById(ctx));
                     });
 
                     // --- Modul 3: Bookings ---
                     path("bookings", () -> {
-                        post(ctx -> bookingController.createBooking(ctx)); 
+                        post(ctx -> bookingController.createBooking(ctx));
+                        get(ctx -> bookingController.getAllBookings(ctx));       // ← tambah ini
+                        get("{bookingId}", ctx -> bookingController.getBookingById(ctx)); // ← opsional 
                     });
                     
                 });
