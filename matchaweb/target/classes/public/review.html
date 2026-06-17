@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review & Rating - Matcha</title>
+    <link rel="stylesheet" href="/css/global.css">
+    <style>
+        .review-form-container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: var(--spacing-lg);
+        }
+
+        .review-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: var(--spacing-xl);
+            border-radius: 12px;
+            margin-bottom: var(--spacing-xl);
+            text-align: center;
+        }
+
+        .review-header h1 {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .talent-card {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            margin: var(--spacing-xl) 0;
+        }
+
+        .talent-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            border: 2px solid white;
+        }
+
+        .talent-info strong {
+            display: block;
+            font-size: var(--font-size-lg);
+        }
+
+        .rating-input {
+            display: flex;
+            gap: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+            justify-content: center;
+        }
+
+        .star {
+            font-size: 48px;
+            cursor: pointer;
+            color: #ccc;
+            transition: all var(--transition-normal);
+        }
+
+        .star:hover,
+        .star.active {
+            color: var(--warning);
+            transform: scale(1.2);
+        }
+
+        .rating-label {
+            text-align: center;
+            margin-top: var(--spacing-md);
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        .review-form {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+        }
+
+        .review-form h3 {
+            color: var(--primary);
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-accent);
+            padding-bottom: var(--spacing-md);
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+        }
+
+        .review-aspects {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
+            padding: var(--spacing-lg);
+            background-color: var(--bg-input);
+            border-radius: 8px;
+        }
+
+        .aspect-rating {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .aspect-rating label {
+            flex: 1;
+            font-size: var(--font-size-sm);
+            margin-bottom: 0;
+        }
+
+        .aspect-rating .stars {
+            display: flex;
+            gap: 4px;
+        }
+
+        .aspect-rating .star-small {
+            font-size: 20px;
+            cursor: pointer;
+            color: #ccc;
+            transition: all var(--transition-normal);
+        }
+
+        .aspect-rating .star-small:hover,
+        .aspect-rating .star-small.active {
+            color: var(--warning);
+        }
+
+        .button-group {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-xl);
+        }
+
+        .reviews-list {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: var(--spacing-lg);
+        }
+
+        .review-item {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .review-header-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .reviewer-info strong {
+            display: block;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .reviewer-info small {
+            color: var(--text-secondary);
+        }
+
+        .review-rating {
+            color: var(--warning);
+            font-size: var(--font-size-lg);
+        }
+
+        .review-content {
+            color: var(--text-secondary);
+            margin: var(--spacing-md) 0;
+            line-height: 1.6;
+        }
+
+        .review-footer {
+            display: flex;
+            gap: var(--spacing-lg);
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+        }
+
+        .helpful-button {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .helpful-button:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .helpful-button.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .review-aspects {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo" onclick="window.location.href='/'">🍵 Matcha<span>Companion</span></div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="sidebar-link" onclick="window.history.back()">Kembali</div>
+                <div class="sidebar-link active" onclick="window.location.href='#'">Berikan Review</div>
+            </div>
+            <div class="sidebar-footer">
+                <button class="btn btn-outline btn-block" onclick="toggleTheme()" style="margin-bottom: 10px;">🌓 Ganti Tema</button>
+                <button class="btn btn-danger btn-block" onclick="logout()">Keluar</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <h3 id="page-title" style="margin: 0; color: var(--text-primary);">Review & Rating</h3>
+                <div class="user-greeting" id="nav-greeting" style="color: var(--text-secondary); font-size: 14px;"></div>
+            </header>
+            
+            <div class="page-content">
+
+    <!-- Review Form Page -->
+    <div id="review-form-page" class="review-form-container">
+        <div class="review-header">
+            <h1>✨ Berikan Rating & Review</h1>
+            <p>Ceritakan pengalaman Anda untuk membantu talent lain</p>
+        </div>
+
+        <div id="talent-info" class="talent-card">
+            <!-- Will be filled by JavaScript -->
+        </div>
+
+        <form id="review-form" onsubmit="submitReview(event)" class="review-form">
+            <h3>Bagaimana Pengalaman Anda?</h3>
+
+            <!-- Overall Rating -->
+            <div class="form-group">
+                <label>Rating Keseluruhan</label>
+                <div class="rating-input">
+                    <span class="star" onclick="setRating(1)">⭐</span>
+                    <span class="star" onclick="setRating(2)">⭐</span>
+                    <span class="star" onclick="setRating(3)">⭐</span>
+                    <span class="star" onclick="setRating(4)">⭐</span>
+                    <span class="star" onclick="setRating(5)">⭐</span>
+                </div>
+                <div class="rating-label" id="rating-label">Klik untuk memberi rating</div>
+                <input type="hidden" id="overall-rating" value="0">
+            </div>
+
+            <!-- Aspect Ratings -->
+            <div class="form-group">
+                <label>Detail Rating</label>
+                <div class="review-aspects">
+                    <div class="aspect-rating">
+                        <label>Profesionalisme</label>
+                        <div class="stars" data-aspect="professionalism">
+                            <span class="star-small" onclick="setAspectRating('professionalism', 1)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('professionalism', 2)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('professionalism', 3)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('professionalism', 4)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('professionalism', 5)">⭐</span>
+                        </div>
+                    </div>
+
+                    <div class="aspect-rating">
+                        <label>Ketepatan Waktu</label>
+                        <div class="stars" data-aspect="punctuality">
+                            <span class="star-small" onclick="setAspectRating('punctuality', 1)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('punctuality', 2)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('punctuality', 3)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('punctuality', 4)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('punctuality', 5)">⭐</span>
+                        </div>
+                    </div>
+
+                    <div class="aspect-rating">
+                        <label>Kualitas Layanan</label>
+                        <div class="stars" data-aspect="quality">
+                            <span class="star-small" onclick="setAspectRating('quality', 1)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('quality', 2)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('quality', 3)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('quality', 4)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('quality', 5)">⭐</span>
+                        </div>
+                    </div>
+
+                    <div class="aspect-rating">
+                        <label>Komunikasi</label>
+                        <div class="stars" data-aspect="communication">
+                            <span class="star-small" onclick="setAspectRating('communication', 1)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('communication', 2)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('communication', 3)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('communication', 4)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('communication', 5)">⭐</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Content -->
+            <div class="form-group">
+                <label>Bagikan Pengalaman Anda</label>
+                <textarea id="review-content" placeholder="Ceritakan apa yang Anda sukai tentang layanan ini... (minimal 20 karakter)" required></textarea>
+            </div>
+
+            <!-- Checkboxes -->
+            <div style="margin: var(--spacing-lg) 0;">
+                <label style="display: flex; align-items: center; margin-bottom: var(--spacing-md);">
+                    <input type="checkbox" id="verified-purchase" checked disabled style="margin-right: var(--spacing-sm);">
+                    <span>✓ Ini adalah pembelian terverifikasi</span>
+                </label>
+                <label style="display: flex; align-items: center;">
+                    <input type="checkbox" id="recommend" style="margin-right: var(--spacing-sm);">
+                    <span>Saya merekomendasikan talent ini</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary btn-block">Kirim Review</button>
+                <button type="button" class="btn btn-outline btn-block" onclick="window.history.back()">Batal</button>
+            </div>
+        </form>
+    </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Theme Logic
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('matcha_theme', newTheme);
+        }
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('matcha_theme') || 'dark');
+    </script>
+    <script src="/js/services/api.js"></script>
+    <script src="/js/utils/helpers.js"></script>
+    <script src="/js/pages/review.js"></script>
+</body>
+</html>

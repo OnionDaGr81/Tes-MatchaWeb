@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya - Matcha</title>
+    <link rel="stylesheet" href="/css/global.css">
+    <style>
+        .profile-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: var(--spacing-lg);
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: var(--spacing-xl);
+            border-radius: 12px;
+            margin-bottom: var(--spacing-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xl);
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            border: 3px solid white;
+            flex-shrink: 0;
+        }
+
+        .profile-info h1 {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .profile-info p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .profile-tabs {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .profile-tab {
+            padding: var(--spacing-md) 0;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-weight: 600;
+            transition: all var(--transition-normal);
+        }
+
+        .profile-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .profile-tab:hover {
+            color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn var(--transition-normal);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .form-section {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-section h3 {
+            color: var(--primary);
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-accent);
+            padding-bottom: var(--spacing-md);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+        }
+
+        .address-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .address-item {
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .address-item strong {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .address-item .badge {
+            margin: 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+
+        .account-danger {
+            background-color: rgba(255, 71, 71, 0.1);
+            border: 1px solid rgba(255, 71, 71, 0.3);
+            border-radius: 8px;
+            padding: var(--spacing-lg);
+        }
+
+        .account-danger h4 {
+            color: var(--danger);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .switch-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+            padding: var(--spacing-md);
+            background-color: var(--bg-input);
+            border-radius: 8px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border);
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo" onclick="window.location.href='/'">🍵 Matcha<span>Companion</span></div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="sidebar-link" onclick="window.history.back()">Kembali</div>
+                <div class="sidebar-link active" onclick="window.location.href='/profile.html'">Profil & Pengaturan</div>
+            </div>
+            <div class="sidebar-footer">
+                <button class="btn btn-outline btn-block" onclick="toggleTheme()" style="margin-bottom: 10px;">🌓 Ganti Tema</button>
+                <button class="btn btn-danger btn-block" onclick="logout()">Keluar</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <h3 id="page-title" style="margin: 0; color: var(--text-primary);">Pengaturan Profil</h3>
+                <div class="user-greeting" id="nav-greeting" style="color: var(--text-secondary); font-size: 14px;"></div>
+            </header>
+            
+            <div class="page-content">
+
+    <!-- Profile Header -->
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-avatar" id="profile-avatar">U</div>
+            <div class="profile-info">
+                <h1 id="profile-name">Loading...</h1>
+                <p id="profile-role">-</p>
+                <p id="profile-email">-</p>
+                <p id="profile-phone">-</p>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="profile-tabs">
+            <div class="profile-tab active" onclick="switchTab('personal')">Data Pribadi</div>
+            <div class="profile-tab" onclick="switchTab('address')">Alamat</div>
+            <div class="profile-tab" onclick="switchTab('security')">Keamanan</div>
+            <div class="profile-tab" id="services-tab" onclick="switchTab('services')" style="display: none;">Layanan</div>
+            <div class="profile-tab" onclick="switchTab('account')">Akun</div>
+        </div>
+
+        <!-- Tab Content: Personal Info -->
+        <div id="personal" class="tab-content active">
+            <form id="personal-form" onsubmit="savePersonalInfo(event)" class="form-section">
+                <h3>Edit Data Pribadi</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" id="nama" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="email" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor Telepon</label>
+                        <input type="tel" id="noTelp" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal Lahir</label>
+                        <input type="date" id="birthDate">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Biografi / Deskripsi Diri</label>
+                    <textarea id="bio" placeholder="Ceritakan tentang diri Anda..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </form>
+        </div>
+
+        <!-- Tab Content: Address -->
+        <div id="address" class="tab-content">
+            <div class="form-section">
+                <h3>Alamat Saya</h3>
+                <div id="address-list" class="address-list">
+                    <div class="empty-message">Tidak ada alamat</div>
+                </div>
+                <button type="button" class="btn btn-primary" style="margin-top: var(--spacing-lg);" onclick="openAddAddressModal()">
+                    Tambah Alamat
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab Content: Security -->
+        <div id="security" class="tab-content">
+            <form id="security-form" onsubmit="changePassword(event)" class="form-section">
+                <h3>Ubah Password</h3>
+                <div class="form-group">
+                    <label>Password Lama</label>
+                    <input type="password" id="old-password" required>
+                </div>
+                <div class="form-group">
+                    <label>Password Baru</label>
+                    <input type="password" id="new-password" required>
+                </div>
+                <div class="form-group">
+                    <label>Konfirmasi Password Baru</label>
+                    <input type="password" id="confirm-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Ubah Password</button>
+            </form>
+
+            <div class="form-section">
+                <h3>Autentikasi Dua Faktor</h3>
+                <div class="switch-container">
+                    <div>
+                        <strong>Aktifkan Autentikasi Dua Faktor</strong>
+                        <p style="font-size: var(--font-size-sm); margin-bottom: 0;">Tambah lapisan keamanan ekstra</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="two-factor">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Services (Talent Only) -->
+        <div id="services" class="tab-content">
+            <div class="form-section">
+                <h3>Layanan Saya</h3>
+                <div id="services-list" style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+                    <div class="empty-message">Tidak ada layanan</div>
+                </div>
+                <button type="button" class="btn btn-primary" style="margin-top: var(--spacing-lg);" onclick="openAddServiceModal()">
+                    Tambah Layanan Baru
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab Content: Account -->
+        <div id="account" class="tab-content">
+            <div class="form-section">
+                <h3>Informasi Akun</h3>
+                <div class="switch-container">
+                    <div>
+                        <strong>Izinkan Notifikasi Email</strong>
+                        <p style="font-size: var(--font-size-sm); margin-bottom: 0;">Terima update via email</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="email-notifications" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="switch-container">
+                    <div>
+                        <strong>Profil Publik</strong>
+                        <p style="font-size: var(--font-size-sm); margin-bottom: 0;">Izinkan orang lain melihat profil Anda</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="public-profile" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-section account-danger">
+                <h4>Zona Bahaya</h4>
+                <p style="color: var(--text-secondary); margin-bottom: var(--spacing-lg);">Tindakan ini tidak dapat dibatalkan</p>
+                
+                <button type="button" class="btn btn-danger btn-block" onclick="deleteAccount()">
+                    Hapus Akun Saya
+                </button>
+            </div>
+        </div>
+    </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Address Modal -->
+    <div id="address-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Tambah Alamat</h2>
+                <button class="modal-close" onclick="closeAddressModal()">✕</button>
+            </div>
+            <form id="address-form" onsubmit="saveAddress(event)">
+                <div class="form-group">
+                    <label>Label Alamat</label>
+                    <input type="text" id="address-label" placeholder="Rumah, Kantor, dll" required>
+                </div>
+                <div class="form-group">
+                    <label>Alamat Lengkap</label>
+                    <textarea id="address-full" placeholder="Jalan, No. Rumah, RT/RW..." required></textarea>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Kota/Kabupaten</label>
+                        <input type="text" id="address-city" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Provinsi</label>
+                        <input type="text" id="address-province" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Kode Pos</label>
+                    <input type="text" id="address-zip" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Simpan Alamat</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Service Modal (Talent Only) -->
+    <div id="service-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Tambah Layanan</h2>
+                <button class="modal-close" onclick="closeServiceModal()">✕</button>
+            </div>
+            <form id="service-form" onsubmit="saveService(event)">
+                <div class="form-group">
+                    <label>Nama Layanan</label>
+                    <input type="text" id="service-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Deskripsi</label>
+                    <textarea id="service-description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Harga (Rp)</label>
+                    <input type="number" id="service-price" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Durasi (menit)</label>
+                    <input type="number" id="service-duration" value="60" min="15" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Simpan Layanan</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Theme Logic
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('matcha_theme', newTheme);
+        }
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('matcha_theme') || 'dark');
+    </script>
+    <script src="/js/services/api.js"></script>
+    <script src="/js/utils/helpers.js"></script>
+    <script src="/js/pages/profile.js"></script>
+</body>
+</html>

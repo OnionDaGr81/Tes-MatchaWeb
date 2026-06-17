@@ -4,57 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matcha - Masuk / Daftar</title>
+    <link rel="stylesheet" href="/css/global.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        body { background-color: #121212; color: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        body { 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+        }
         
         .auth-container {
-            background-color: #1e1e1e;
-            border: 1px solid #2a2a2a;
-            border-radius: 16px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
             padding: 40px;
             width: 100%;
-            max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 420px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
         }
 
         .auth-header { text-align: center; margin-bottom: 30px; }
-        .auth-header h2 { color: #8fbc8f; font-weight: 400; font-size: 28px; }
+        .auth-header h2 { color: var(--primary); font-weight: 600; font-size: 28px; margin-bottom: 5px; }
+        .auth-header p { color: var(--text-secondary); font-size: 14px; margin-bottom: 0; }
         
         /* Toggle Button */
-        .toggle-box { display: flex; margin-bottom: 25px; border-radius: 30px; background: #121212; overflow: hidden; }
-        .toggle-btn { flex: 1; padding: 12px; text-align: center; cursor: pointer; color: #a0a0a0; font-weight: bold; transition: 0.3s; }
-        .toggle-btn.active { background-color: #4a7c59; color: white; }
+        .toggle-box { display: flex; margin-bottom: 25px; border-radius: 8px; background: var(--bg-input); overflow: hidden; padding: 4px; border: 1px solid var(--border); }
+        .toggle-btn { flex: 1; padding: 10px; text-align: center; cursor: pointer; color: var(--text-secondary); font-weight: 500; transition: 0.2s; border-radius: 6px; font-size: 14px; }
+        .toggle-btn.active { background-color: var(--primary); color: #fff; box-shadow: var(--shadow-sm); }
 
-        /* Form Elements */
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-size: 14px; color: #a0a0a0; }
-        .form-group input, .form-group select {
-            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333;
-            background-color: #121212; color: white; outline: none; transition: 0.3s;
-        }
-        .form-group input:focus, .form-group select:focus { border-color: #8fbc8f; }
         
-        .btn-submit {
-            width: 100%; padding: 14px; background-color: #4a7c59; color: white;
-            border: none; border-radius: 8px; font-size: 16px; font-weight: bold;
-            cursor: pointer; transition: 0.3s; margin-top: 10px;
-        }
-        .btn-submit:hover { background-color: #5c966f; }
-        
-        .alert { padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 14px; display: none; text-align: center; }
-        .alert.error { background-color: rgba(255, 107, 107, 0.1); color: #ff6b6b; border: 1px solid #ff6b6b; }
-        .alert.success { background-color: rgba(143, 188, 143, 0.1); color: #8fbc8f; border: 1px solid #8fbc8f; }
 
-        #register-form { display: none; } /* Sembunyikan register di awal */
+        .theme-toggle-corner {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="auth-container">
+    <button class="theme-switch-btn" style="position: absolute; top: 20px; right: 20px;" onclick="toggleTheme()" title="Ganti Tema">🌓</button>
+
+    <div class="auth-container animate-in">
         <div class="auth-header">
             <h2>🍵 Matcha</h2>
-            <p style="color: #a0a0a0; font-size: 14px; margin-top: 5px;">Portal Pendamping Premium</p>
+            <p>Portal Pendamping Premium</p>
         </div>
 
         <div class="toggle-box">
@@ -73,10 +69,11 @@
                 <label>Password</label>
                 <input type="password" id="login-password" required placeholder="••••••••">
             </div>
-            <button type="submit" class="btn-submit">Masuk ke Akun</button>
+            <button type="submit" class="btn btn-primary btn-block">Masuk ke Akun</button>
+            <p class="text-center mt-md"><a href="/" style="font-size: 13px;">Kembali ke Beranda</a></p>
         </form>
 
-        <form id="register-form" onsubmit="handleRegister(event)">
+        <form id="register-form" onsubmit="handleRegister(event)" style="display: none;">
             <div class="form-group">
                 <label>Nama Lengkap</label>
                 <input type="text" id="reg-nama" required placeholder="Contoh: Didit Lemon Tea">
@@ -100,96 +97,23 @@
                     <option value="talent">Talent (Pendamping)</option>
                 </select>
             </div>
-            <button type="submit" class="btn-submit">Buat Akun Baru</button>
+            <button type="submit" class="btn btn-primary btn-block">Buat Akun Baru</button>
+            <p class="text-center mt-md"><a href="/" style="font-size: 13px;">Kembali ke Beranda</a></p>
         </form>
     </div>
 
     <script>
-        // --- Fungsi Animasi Pindah Tab ---
-        function switchForm(type) {
-            document.getElementById('alert-box').style.display = 'none'; // Bersihkan error
-            if (type === 'login') {
-                document.getElementById('login-form').style.display = 'block';
-                document.getElementById('register-form').style.display = 'none';
-                document.getElementById('btn-login').classList.add('active');
-                document.getElementById('btn-register').classList.remove('active');
-            } else {
-                document.getElementById('login-form').style.display = 'none';
-                document.getElementById('register-form').style.display = 'block';
-                document.getElementById('btn-login').classList.remove('active');
-                document.getElementById('btn-register').classList.add('active');
-            }
+        // Theme Logic
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('matcha_theme', newTheme);
         }
-
-        function showAlert(msg, isSuccess = false) {
-            const box = document.getElementById('alert-box');
-            box.style.display = 'block';
-            box.className = isSuccess ? 'alert success' : 'alert error';
-            box.innerText = msg;
-        }
-
-        // --- Fungsi POST ke Backend (Login) ---
-        async function handleLogin(e) {
-            e.preventDefault();
-            const data = {
-                email: document.getElementById('login-email').value,
-                password: document.getElementById('login-password').value
-            };
-
-            try {
-                const response = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                if (response.ok && result.status === 'success') {
-                    showAlert('Berhasil masuk! Mengalihkan...', true);
-                    
-                    // Simpan data user di memori browser (Local Storage)
-                    localStorage.setItem('matcha_user', JSON.stringify(result.user));
-                    
-                    // Alihkan kembali ke halaman utama setelah 1 detik
-                    setTimeout(() => window.location.href = '/', 1000);
-                } else {
-                    showAlert(result.message || 'Gagal masuk. Periksa email dan password.');
-                }
-            } catch (err) {
-                showAlert('Server tidak merespons. Pastikan backend menyala.');
-            }
-        }
-
-        // --- Fungsi POST ke Backend (Register) ---
-        async function handleRegister(e) {
-            e.preventDefault();
-            const data = {
-                nama: document.getElementById('reg-nama').value,
-                email: document.getElementById('reg-email').value,
-                password: document.getElementById('reg-password').value,
-                noTelp: document.getElementById('reg-notelp').value,
-                role: document.getElementById('reg-role').value
-            };
-
-            try {
-                const response = await fetch('/api/auth/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                if (response.ok && result.status === 'success') {
-                    showAlert('Pendaftaran sukses! Silakan Masuk.', true);
-                    document.getElementById('register-form').reset();
-                    setTimeout(() => switchForm('login'), 1500); // Geser ke tab login otomatis
-                } else {
-                    showAlert(result.message || 'Gagal mendaftar. Email mungkin sudah dipakai.');
-                }
-            } catch (err) {
-                showAlert('Server tidak merespons. Pastikan backend menyala.');
-            }
-        }
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('matcha_theme') || 'dark');
     </script>
+    <script src="/js/services/api.js"></script>
+    <script src="/js/utils/helpers.js"></script>
+    <script src="/js/pages/login.js"></script>
 </body>
 </html>

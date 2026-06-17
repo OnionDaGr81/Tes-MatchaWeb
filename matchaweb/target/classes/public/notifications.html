@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifikasi - Matcha</title>
+    <link rel="stylesheet" href="/css/global.css">
+    <style>
+        .notifications-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: var(--spacing-lg);
+        }
+
+        .notifications-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .notification-filters {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background-color: var(--border);
+            border: 1px solid transparent;
+            border-radius: 20px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary-dark);
+            color: white;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+        }
+
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .notification-item {
+            background-color: var(--bg-card);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .notification-item.unread {
+            background-color: rgba(143, 188, 143, 0.05);
+            border-left-color: var(--warning);
+        }
+
+        .notification-item:hover {
+            box-shadow: var(--shadow-md);
+            background-color: var(--bg-input);
+        }
+
+        .notification-icon {
+            font-size: 24px;
+            margin-right: var(--spacing-md);
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .notification-message {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.5;
+        }
+
+        .notification-time {
+            color: var(--text-muted);
+            font-size: var(--font-size-xs);
+        }
+
+        .notification-action {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-shrink: 0;
+        }
+
+        .notification-unread-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--warning);
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-2xl);
+            color: var(--text-secondary);
+        }
+
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: var(--spacing-lg);
+            opacity: 0.3;
+        }
+
+        .notification-badge {
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .type-booking {
+            border-left-color: var(--info);
+        }
+
+        .type-payment {
+            border-left-color: var(--success);
+        }
+
+        .type-review {
+            border-left-color: var(--warning);
+        }
+
+        .type-message {
+            border-left-color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .notification-item {
+                flex-direction: column;
+            }
+
+            .notification-action {
+                width: 100%;
+                margin-top: var(--spacing-md);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo" onclick="window.location.href='/'">🍵 Matcha<span>Companion</span></div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="sidebar-link" onclick="window.history.back()">Kembali</div>
+                <div class="sidebar-link active" onclick="window.location.href='/notifications.html'">Notifikasi</div>
+            </div>
+            <div class="sidebar-footer">
+                <button class="btn btn-outline btn-block" onclick="toggleTheme()" style="margin-bottom: 10px;">🌓 Ganti Tema</button>
+                <button class="btn btn-danger btn-block" onclick="logout()">Keluar</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <h3 id="page-title" style="margin: 0; color: var(--text-primary);">Notifikasi</h3>
+                <div class="user-greeting" id="nav-greeting" style="color: var(--text-secondary); font-size: 14px;"></div>
+            </header>
+            
+            <div class="page-content">
+
+    <!-- Main Content -->
+    <div class="notifications-container">
+        <div class="notifications-header">
+            <h1 style="color: var(--primary); margin-bottom: 0;">Notifikasi</h1>
+            <button class="btn btn-sm btn-secondary" onclick="markAllAsRead()">
+                Tandai Semua Sudah Dibaca
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="notification-filters">
+            <button class="filter-btn active" onclick="filterNotifications('all')">Semua</button>
+            <button class="filter-btn" onclick="filterNotifications('booking')">Pesanan</button>
+            <button class="filter-btn" onclick="filterNotifications('payment')">Pembayaran</button>
+            <button class="filter-btn" onclick="filterNotifications('review')">Review</button>
+        </div>
+
+        <!-- Notifications List -->
+        <div id="notifications-container" class="notifications-list">
+            <div class="empty-state">
+                <div class="spinner" style="margin: 20px auto;"></div>
+                <p>Memuat notifikasi...</p>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <h3>Tidak Ada Notifikasi</h3>
+            <p>Anda akan menerima notifikasi ketika ada pembaruan penting</p>
+        </div>
+    </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Theme Logic
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('matcha_theme', newTheme);
+        }
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('matcha_theme') || 'dark');
+    </script>
+    <script src="/js/services/api.js"></script>
+    <script src="/js/utils/helpers.js"></script>
+    <script src="/js/pages/notifications.js"></script>
+</body>
+</html>

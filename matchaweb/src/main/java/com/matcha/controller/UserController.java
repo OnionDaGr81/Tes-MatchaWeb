@@ -1,38 +1,76 @@
 package com.matcha.controller;
 
+import com.matcha.model.User;
 import com.matcha.service.UserService;
 import io.javalin.http.Context;
+import java.util.List;
+import java.util.Map;
 
 public class UserController {
+
     private final UserService userService;
 
     public UserController() {
         this.userService = new UserService();
     }
 
-    // Fungsi ini akan dipanggil oleh Javalin
+    // GET /api/users
     public void fetchAllUsers(Context ctx) {
-        ctx.json(userService.getAllUsers()); // Otomatis jadi JSON berkat Jackson
+        try {
+            List<User> users = userService.getAllUsers();
+            ctx.status(200).json(Map.of("status", "success", "data", users));
+        } catch (Exception e) {
+            ctx.status(500).json(Map.of("status", "error", "message", "Gagal mengambil data user."));
+        }
     }
 
+    // GET /api/users/{userId}
     public void getUserById(Context ctx) {
-        String userId = ctx.pathParam("userId");
-        ctx.json(userService.getUserById(userId));
+        try {
+            String userId = ctx.pathParam("userId");
+            User user = userService.getUserById(userId);
+            if (user != null) {
+                ctx.status(200).json(Map.of("status", "success", "data", user));
+            } else {
+                ctx.status(404).json(Map.of("status", "error", "message", "User tidak ditemukan."));
+            }
+        } catch (Exception e) {
+            ctx.status(400).json(Map.of("status", "error", "message", e.getMessage()));
+        }
     }
 
+    // PUT /api/users/{userId}
     public void updateUser(Context ctx) {
-        String userId = ctx.pathParam("userId");
-        // Di sini kita bisa parsing body JSON untuk mendapatkan data update
-        // Misalnya, kita bisa menggunakan ctx.bodyAsClass(User.class) untuk mendapatkan objek User dari JSON
-        // Kemudian kita bisa memanggil userService.updateUser(userId, updatedUser);
-        // Tapi untuk sekarang, kita hanya akan mengembalikan pesan sederhana
-        ctx.result("Update user dengan ID: " + userId);
+        try {
+            String userId = ctx.pathParam("userId");
+            User updatedUser = ctx.bodyAsClass(User.class);
+            userService.updateUser(userId, updatedUser);
+            ctx.status(200).json(Map.of(
+                "status", "success",
+                "message", "Data user berhasil diperbarui."
+            ));
+        } catch (Exception e) {
+            ctx.status(400).json(Map.of(
+                "status", "error",
+                "message", e.getMessage() != null ? e.getMessage() : "Gagal mengupdate user."
+            ));
+        }
     }
 
+    // DELETE /api/users/{userId}
     public void deleteUser(Context ctx) {
-        String userId = ctx.pathParam("userId");
-        // Di sini kita bisa memanggil userService.deleteUser(userId);
-        // Tapi untuk sekarang, kita hanya akan mengembalikan pesan sederhana
-        ctx.result("Delete user dengan ID: " + userId);
+        try {
+            String userId = ctx.pathParam("userId");
+            userService.deleteUser(userId);
+            ctx.status(200).json(Map.of(
+                "status", "success",
+                "message", "User berhasil dihapus."
+            ));
+        } catch (Exception e) {
+            ctx.status(400).json(Map.of(
+                "status", "error",
+                "message", e.getMessage() != null ? e.getMessage() : "Gagal menghapus user."
+            ));
+        }
     }
 }

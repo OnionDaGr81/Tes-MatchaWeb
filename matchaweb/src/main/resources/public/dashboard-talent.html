@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Talent - Matcha</title>
+    <link rel="stylesheet" href="/css/global.css">
+    <style>
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .stat-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .stat-card h4 {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .stat-card .stat-value {
+            font-size: var(--font-size-2xl);
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .stat-card .stat-label {
+            color: var(--text-muted);
+            font-size: var(--font-size-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+
+        .section-panel {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+        }
+
+        .section-panel h3 {
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: var(--spacing-md);
+            font-size: 18px;
+        }
+
+        .booking-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .booking-item {
+            background-color: var(--bg-input);
+            border-left: 3px solid var(--primary);
+            padding: var(--spacing-md);
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .booking-item:hover {
+            background-color: var(--border);
+        }
+
+        .booking-info h4 {
+            margin-bottom: 2px;
+            color: var(--text-primary);
+            font-size: 15px;
+        }
+
+        .booking-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+
+        .earnings-chart {
+            background-color: var(--bg-input);
+            border-radius: 8px;
+            padding: var(--spacing-lg);
+            margin-top: var(--spacing-md);
+            min-height: 200px;
+            display: flex;
+            align-items: flex-end;
+            gap: var(--spacing-sm);
+        }
+
+        .bar {
+            flex: 1;
+            background-color: var(--primary);
+            border-radius: 4px 4px 0 0;
+            min-height: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: var(--spacing-xs);
+            color: var(--bg-darker);
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .bar:hover {
+            background-color: var(--primary-light);
+            transform: scaleY(1.02);
+        }
+
+        .service-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .service-item {
+            background-color: var(--bg-input);
+            padding: var(--spacing-md);
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid transparent;
+        }
+        
+        .service-item:hover {
+            border-color: var(--border-accent);
+        }
+
+        .service-item h4 {
+            margin-bottom: 2px;
+            font-size: 15px;
+        }
+
+        .service-item p {
+            font-size: 13px;
+            margin-bottom: 0;
+            color: var(--text-secondary);
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: var(--text-muted);
+            font-style: italic;
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo" onclick="window.location.href='/'">🍵 Matcha<span>Companion</span></div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="sidebar-link active" onclick="window.location.href='/dashboard-talent.html'">📊 Dashboard</div>
+                <div class="sidebar-link" onclick="window.location.href='/my-bookings.html'">Pesanan Saya</div>
+                <div class="sidebar-link" onclick="window.location.href='/notifications.html'">Notifikasi</div>
+                <div class="sidebar-link" onclick="window.location.href='/profile.html'">Profil & Layanan</div>
+            </div>
+            <div class="sidebar-footer">
+                <button class="btn btn-outline btn-block" onclick="toggleTheme()" style="margin-bottom: 10px;">🌓 Ganti Tema</button>
+                <button class="btn btn-danger btn-block" onclick="logout()">Keluar</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <h3 id="page-title" style="margin: 0; color: var(--text-primary);">Dashboard Talent</h3>
+                <div class="user-greeting" id="nav-greeting" style="color: var(--text-secondary); font-size: 14px;"></div>
+            </header>
+            
+            <div class="page-content">
+                <!-- Stats Cards -->
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <h4>Pesanan Pending</h4>
+                        <div class="stat-value" id="pending-count">0</div>
+                        <div class="stat-label">Menunggu persetujuan</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h4>Pesanan Dikonfirmasi</h4>
+                        <div class="stat-value" id="confirmed-count">0</div>
+                        <div class="stat-label">Siap dilayani</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h4>Total Penghasilan</h4>
+                        <div class="stat-value" id="total-earnings">Rp 0</div>
+                        <div class="stat-label">Bulan ini</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h4>Rating</h4>
+                        <div class="stat-value" id="avg-rating">0</div>
+                        <div class="stat-label">dari review</div>
+                    </div>
+                </div>
+
+                <!-- Main Grid -->
+                <div class="main-grid">
+                    <!-- Upcoming Bookings -->
+                    <div class="section-panel">
+                        <h3>Pesanan Mendatang</h3>
+                        <div id="upcoming-bookings" class="booking-list">
+                            <div class="empty-message">Tidak ada pesanan mendatang</div>
+                        </div>
+                    </div>
+
+                    <!-- Earnings Chart -->
+                    <div class="section-panel">
+                        <h3>💰 Penghasilan Mingguan</h3>
+                        <div id="earnings-chart" class="earnings-chart">
+                            <div class="empty-message">Memuat data...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Services & Reviews -->
+                <div class="main-grid">
+                    <!-- My Services -->
+                    <div class="section-panel">
+                        <h3>Layanan Saya</h3>
+                        <div id="services-list" class="service-list">
+                            <div class="empty-message">Tidak ada layanan</div>
+                        </div>
+                        <button class="btn btn-primary btn-block" style="margin-top: var(--spacing-md);" onclick="window.location.href='/profile.html'">
+                            Kelola Layanan
+                        </button>
+                    </div>
+
+                    <!-- Recent Reviews -->
+                    <div class="section-panel">
+                        <h3>Review Terbaru</h3>
+                        <div id="reviews-list" style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                            <div class="empty-message">Belum ada review</div>
+                        </div>
+                        <button class="btn btn-secondary btn-block" style="margin-top: var(--spacing-md);" onclick="window.location.href='/review.html'">
+                            Lihat Semua Review
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Theme Logic
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('matcha_theme', newTheme);
+        }
+
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('matcha_theme') || 'dark');
+    </script>
+    <script src="/js/services/api.js"></script>
+    <script src="/js/utils/helpers.js"></script>
+    <script src="/js/pages/dashboard-talent.js"></script>
+</body>
+</html>

@@ -4,82 +4,97 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Klien - Matcha</title>
+    <link rel="stylesheet" href="/css/global.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #121212; color: #f5f5f5; padding-bottom: 60px; }
+        .container-dash { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+        
+        .profile-panel { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 25px; height: fit-content; }
+        .profile-panel h3 { color: var(--primary); margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .profile-panel p { color: var(--text-secondary); font-size: 14px; margin-bottom: 8px; }
+        .profile-panel strong { color: var(--text-primary); }
 
-        /* Navbar */
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 8%; background-color: #1a1a1a; border-bottom: 1px solid #2e4a31; }
-        nav .logo { font-size: 24px; font-weight: bold; color: #ffffff; text-decoration: none; cursor: pointer; }
-        nav .logo span { color: #8fbc8f; }
+        .history-panel { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 25px; }
+        .history-panel h3 { color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         
-        .btn-outline { background-color: transparent; color: #8fbc8f; border: 1px solid #8fbc8f; padding: 6px 15px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: 0.3s; margin-right: 10px; }
-        .btn-outline:hover { background-color: #8fbc8f; color: #121212; }
-        .btn-logout { background-color: #ff4747; color: white; border: none; padding: 6px 15px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: 0.3s; }
-        .btn-logout:hover { background-color: #ff6b6b; }
-
-        /* Layout Dashboard */
-        .container { max-width: 1000px; margin: 40px auto; padding: 20px; display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+        .booking-card { background-color: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 15px; margin-bottom: 15px; transition: 0.2s; }
+        .booking-card:hover { border-color: var(--border-accent); }
+        .booking-card h4 { margin-bottom: 5px; color: var(--text-primary); font-size: 16px; font-weight: 500; }
+        .booking-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 5px; }
         
-        /* Panel Profil */
-        .profile-panel { background-color: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 16px; padding: 25px; height: fit-content; }
-        .profile-panel h3 { color: #8fbc8f; margin-bottom: 10px; border-bottom: 1px solid #2e4a31; padding-bottom: 10px; }
-        .profile-panel p { color: #a0a0a0; font-size: 14px; margin-bottom: 8px; }
-        .profile-panel strong { color: #f5f5f5; }
-
-        /* Panel Histori Booking */
-        .history-panel { background-color: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 16px; padding: 25px; }
-        .history-panel h3 { color: #8fbc8f; margin-bottom: 20px; border-bottom: 1px solid #2e4a31; padding-bottom: 10px; }
+        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-top: 5px; text-transform: uppercase; }
+        .status-pending { background-color: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid var(--warning); }
+        .status-confirmed { background-color: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid var(--success); }
+        .status-cancelled { background-color: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
         
-        .booking-card { background-color: #121212; border: 1px solid #333; border-radius: 10px; padding: 15px; margin-bottom: 15px; }
-        .booking-card h4 { margin-bottom: 5px; color: #fff; }
-        .booking-card p { font-size: 13px; color: #a0a0a0; margin-bottom: 5px; }
-        
-        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-top: 5px; }
-        .status-pending { background-color: rgba(255, 193, 7, 0.2); color: #ffc107; border: 1px solid #ffc107; }
-        .status-confirmed { background-color: rgba(143, 188, 143, 0.2); color: #8fbc8f; border: 1px solid #8fbc8f; }
-        .status-cancelled { background-color: rgba(255, 71, 71, 0.2); color: #ff4747; border: 1px solid #ff4747; }
-        
-        .empty-state { text-align: center; color: #a0a0a0; font-style: italic; padding: 20px; }
+        .empty-state { text-align: center; color: var(--text-muted); font-style: italic; padding: 20px; border: 1px dashed var(--border); border-radius: 8px; }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo" onclick="window.location.href='/'">🍵 Matcha<span>Companion</span></div>
-        <div>
-            <span id="nav-greeting" style="color: #a0a0a0; margin-right: 15px; font-size: 14px;"></span>
-            <button class="btn-outline" onclick="window.location.href='/'">Kembali ke Beranda</button>
-            <button class="btn-logout" onclick="logout()">Keluar</button>
-        </div>
-    </nav>
-
-    <div class="container">
-        <div class="profile-panel">
-            <h3>Profil Saya</h3>
-            <p>Nama: <strong id="profile-nama">-</strong></p>
-            <p>Email: <strong id="profile-email">-</strong></p>
-            <p>No. Telp: <strong id="profile-telp">-</strong></p>
-            <p style="margin-top: 15px;"><span class="status-badge status-confirmed">MEMBER AKTIF</span></p>
-        </div>
-
-        <div class="history-panel">
-            <h3>Riwayat Booking</h3>
-            <div id="booking-container">
-                <p class="empty-state">Sedang memuat data pesanan...</p>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo" onclick="window.location.href='/'">🍵 Matcha<span>Companion</span></div>
             </div>
-        </div>
+            <div class="sidebar-nav">
+                <div class="sidebar-link active" onclick="window.location.href='/dashboard-client.html'">📊 Dashboard</div>
+                <div class="sidebar-link" onclick="window.location.href='/catalog.html'">🔍 Katalog Talent</div>
+                <div class="sidebar-link" onclick="window.location.href='/my-bookings.html'">Booking Saya</div>
+                <div class="sidebar-link" onclick="window.location.href='/notifications.html'">Notifikasi</div>
+                <div class="sidebar-link" onclick="window.location.href='/profile.html'">Profil</div>
+            </div>
+            <div class="sidebar-footer">
+                <button class="btn btn-outline btn-block" onclick="toggleTheme()" style="margin-bottom: 10px;">🌓 Ganti Tema</button>
+                <button class="btn btn-danger btn-block" onclick="logout()">Keluar</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <h3 id="page-title" style="margin: 0; color: var(--text-primary);">Dashboard</h3>
+                <div class="user-greeting" id="nav-greeting" style="color: var(--text-secondary); font-size: 14px;"></div>
+            </header>
+            
+            <div class="page-content">
+                <div class="container-dash">
+                    <div class="profile-panel">
+                        <h3>Profil Saya</h3>
+                        <p>Nama: <strong id="profile-nama">-</strong></p>
+                        <p>Email: <strong id="profile-email">-</strong></p>
+                        <p>No. Telp: <strong id="profile-telp">-</strong></p>
+                        <p style="margin-top: 15px;"><span class="status-badge status-confirmed">MEMBER AKTIF</span></p>
+                    </div>
+
+                    <div class="history-panel">
+                        <h3>Riwayat Booking</h3>
+                        <div id="booking-container">
+                            <p class="empty-state">Sedang memuat data pesanan...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
     <script>
+        // Theme Logic
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('matcha_theme', newTheme);
+        }
+
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('matcha_theme') || 'dark');
+
         let currentUser = null;
 
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Cek apakah ada user yang login
             const userSession = localStorage.getItem('matcha_user');
             
             if (!userSession) {
-                // Jika belum login, tendang balik ke halaman login
                 alert("Anda harus masuk terlebih dahulu!");
                 window.location.href = '/login.html';
                 return;
@@ -87,30 +102,26 @@
 
             currentUser = JSON.parse(userSession);
 
-            // Jika yang nyasar ke sini adalah Talent, arahkan ke dashboard talent
             if (currentUser.role.toLowerCase() === 'talent') {
                 window.location.href = '/dashboard-talent.html';
                 return;
             }
 
-            // 2. Tampilkan data diri di panel profil
-            document.getElementById('nav-greeting').innerHTML = `Halo, <b style="color:#8fbc8f;">${currentUser.nama.split(' ')[0]}</b>!`;
+            document.getElementById('nav-greeting').innerHTML = `Halo, <b style="color:var(--primary);">${currentUser.nama.split(' ')[0]}</b>!`;
             document.getElementById('profile-nama').innerText = currentUser.nama;
             document.getElementById('profile-email').innerText = currentUser.email;
             document.getElementById('profile-telp').innerText = currentUser.noTelp || '-';
 
-            // 3. Tarik data riwayat booking dari Backend
             fetchBookingHistory();
         });
 
         function fetchBookingHistory() {
             const container = document.getElementById('booking-container');
             
-            // Tembak endpoint GET /api/bookings yang sudah kita buat di Modul 3
             fetch(`/api/bookings?userId=${currentUser.id}&role=client`)
                 .then(res => res.json())
                 .then(result => {
-                    container.innerHTML = ''; // Bersihkan loading
+                    container.innerHTML = ''; 
 
                     if (result.status === 'success') {
                         const bookings = result.data;
@@ -120,7 +131,6 @@
                             return;
                         }
 
-                        // Render setiap pesanan jadi HTML
                         bookings.forEach(b => {
                             let statusClass = 'status-pending';
                             let statusText = 'Menunggu Konfirmasi';
@@ -129,7 +139,6 @@
                             else if (b.status === 'CANCELLED') { statusClass = 'status-cancelled'; statusText = 'Ditolak'; }
                             else if (b.status === 'COMPLETED') { statusClass = 'status-confirmed'; statusText = 'Selesai'; }
 
-                            // Format tanggal agar rapi
                             const tglMulai = new Date(b.waktuMulai).toLocaleString('id-ID');
                             const tglSelesai = new Date(b.waktuSelesai).toLocaleString('id-ID');
 
@@ -145,7 +154,7 @@
                     }
                 })
                 .catch(err => {
-                    container.innerHTML = `<p class="empty-state" style="color: #ff4747;">Gagal menarik data dari server.</p>`;
+                    container.innerHTML = `<p class="empty-state" style="color: var(--danger);">Gagal menarik data dari server.</p>`;
                 });
         }
 

@@ -4,229 +4,184 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matcha - Premium Rental Companion</title>
+    <link rel="stylesheet" href="/css/global.css">
     <style>
-        /* --- CSS Tema Elegan (Dark & Soft Matcha) --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #121212; /* Gelap elegan */
-            color: #f5f5f5;
-            padding-bottom: 60px;
-        }
-
-        /* Navbar */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 8%;
-            background-color: #1a1a1a;
-            border-bottom: 1px solid #2e4a31;
-        }
-
-        nav .logo {
-            font-size: 26px;
-            font-weight: bold;
-            color: #ffffff;
-            letter-spacing: 1px;
-        }
-
-        nav .logo span {
-            color: #8fbc8f; /* Hijau Soft Matcha */
-        }
-
-        /* Hero Section */
+        /* Specific Index Styles */
         .hero {
             text-align: center;
-            padding: 90px 20px;
-            background: linear-gradient(180deg, rgba(26,26,26,1) 0%, rgba(18,18,18,1) 100%);
+            padding: 140px 20px 100px;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .hero h1 {
-            font-size: 46px;
-            margin-bottom: 15px;
-            font-weight: 300;
+            font-size: 52px;
+            margin-bottom: 24px;
+            font-weight: 600;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            color: var(--text-primary);
         }
 
         .hero h1 span {
-            color: #8fbc8f;
-            font-weight: bold;
+            color: var(--primary);
         }
 
         .hero p {
-            color: #a0a0a0;
+            color: var(--text-secondary);
             font-size: 18px;
-            margin-bottom: 35px;
+            margin-bottom: 40px;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
             line-height: 1.6;
-        }
-
-        .btn-primary {
-            background-color: #4a7c59; /* Hijau Matcha Elegan */
-            color: white;
-            padding: 14px 32px;
-            border: none;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(74, 124, 89, 0.3);
-        }
-
-        .btn-primary:hover {
-            background-color: #5c966f;
-            transform: translateY(-2px);
-        }
-
-        /* Container & Grid */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .section-title {
-            text-align: center;
-            margin: 40px 0 30px 0;
-            font-size: 28px;
             font-weight: 400;
         }
 
         .talent-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
+            gap: 24px;
         }
 
-        /* Talent Card */
         .talent-card {
-            background-color: #1e1e1e;
-            border: 1px solid #2a2a2a;
-            border-radius: 16px;
-            padding: 25px;
-            transition: 0.3s;
-            text-align: center;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            transition: all 0.2s ease;
+            text-align: left;
         }
 
         .talent-card:hover {
-            border-color: #8fbc8f;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(143, 188, 143, 0.1);
+            border-color: var(--border-accent);
+            box-shadow: var(--shadow-sm);
         }
 
         .talent-card h3 {
-            font-size: 22px;
-            margin-bottom: 5px;
+            font-size: 20px;
+            margin-bottom: 6px;
+            font-weight: 500;
         }
 
         .talent-card .role-badge {
             display: inline-block;
-            color: #8fbc8f;
-            font-size: 13px;
-            letter-spacing: 1px;
+            color: var(--primary);
+            font-size: 12px;
+            letter-spacing: 0.5px;
             text-transform: uppercase;
-            margin-bottom: 15px;
+            font-weight: 600;
+            margin-bottom: 16px;
         }
 
         .talent-card p {
-            color: #a0a0a0;
+            color: var(--text-secondary);
             font-size: 14px;
             line-height: 1.6;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
-        .btn-outline {
-            background-color: transparent;
-            color: #8fbc8f;
-            border: 1px solid #8fbc8f;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.3s;
+        .empty-state {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 40px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px dashed var(--border);
+            color: var(--text-muted);
         }
 
-        .btn-outline:hover {
-            background-color: #8fbc8f;
-            color: #121212;
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.6s ease forwards;
+            opacity: 0;
         }
     </style>
 </head>
 <body>
 
-    <nav>
+    <nav class="old-nav">
         <div class="logo">🍵 Matcha<span>Companion</span></div>
-        <div id="nav-container">
-            <button class="btn-primary" style="padding: 8px 20px; font-size: 14px;" onclick="window.location.href='/login.html'">Masuk</button>
+        <div id="nav-container" style="display: flex; align-items: center; gap: 15px;">
+            <button class="theme-switch-btn" onclick="toggleTheme()" title="Ganti Tema">🌓</button>
+            <button class="btn btn-primary" onclick="window.location.href='/login.html'">Masuk</button>
         </div>
     </nav>
 
     <header class="hero">
-        <h1>Temukan <span>Partner Idealmu</span> Hari Ini</h1>
-        <p>Sewa talent eksklusif untuk menemani hari-harimu. Mulai dari teman ngobrol, teman jalan, hingga pendamping acara khusus untukmu.</p>
-        <button class="btn-primary" onclick="fetchLiveTalents()">Jelajahi Profil Talent</button>
+        <h1 class="animate-in">Temukan <span>Partner Idealmu</span> Hari Ini</h1>
+        <p class="animate-in" style="animation-delay: 0.1s;">Sewa talent eksklusif untuk menemani hari-harimu. Mulai dari teman ngobrol, teman jalan, hingga pendamping acara khusus untukmu.</p>
+        <div class="animate-in" style="animation-delay: 0.2s;">
+            <button class="btn btn-primary btn-lg" onclick="window.location.href='/catalog.html'">Jelajahi Katalog</button>
+        </div>
     </header>
 
     <main class="container">
-        <h2 class="section-title">Katalog Talent Kami</h2>
+        <h2 style="border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 30px;">Talent Pilihan</h2>
         
         <div id="talent-listings" class="talent-grid">
-            <div style="grid-column: 1/-1; text-align: center; color: #555;">
-                <i>Klik tombol di atas untuk menemukan partner terbaikmu.</i>
+            <div class="empty-state">
+                <i>Memuat talent...</i>
             </div>
         </div>
     </main>
 
     <script>
-        // --- 1. Fungsi Cek Login saat halaman pertama kali dibuka ---
+        // Theme Logic
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('matcha_theme', newTheme);
+        }
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('matcha_theme') || 'dark');
+
         document.addEventListener('DOMContentLoaded', () => {
             const userSession = localStorage.getItem('matcha_user');
             
             if (userSession) {
                 const user = JSON.parse(userSession);
                 const navContainer = document.getElementById('nav-container');
-                const namaDepan = user.nama.split(' ')[0]; 
+                const namaDepan = user.nama ? user.nama.split(' ')[0] : 'User'; 
 
-                if (user.role.toLowerCase() === 'talent') {
+                if (user.role && user.role.toLowerCase() === 'talent') {
                     navContainer.innerHTML = `
-                        <span style="color: #a0a0a0; margin-right: 15px; font-size: 14px;">Halo, <b style="color:#8fbc8f;">${namaDepan}</b>!</span>
-                        <button class="btn-outline" style="padding: 6px 15px; font-size: 13px;" onclick="window.location.href='/dashboard-talent.html'">Ruang Talent</button>
-                        <button class="btn-primary" style="padding: 6px 15px; font-size: 13px; background-color: #ff4747; border: none; box-shadow: none;" onclick="logout()">Keluar</button>
+                        <button class="theme-switch-btn" onclick="toggleTheme()" title="Ganti Tema">🌓</button>
+                        <span style="color: var(--text-secondary); font-size: 14px;">Halo, <b style="color:var(--text-primary);">${namaDepan}</b>!</span>
+                        <button class="btn btn-outline btn-sm" onclick="window.location.href='/dashboard-talent.html'">Ruang Talent</button>
+                        <button class="btn btn-danger btn-sm" onclick="logout()">Keluar</button>
                     `;
                 } else {
                     navContainer.innerHTML = `
-                        <span style="color: #a0a0a0; margin-right: 15px; font-size: 14px;">Halo, <b style="color:#8fbc8f;">${namaDepan}</b>!</span>
-                        <button class="btn-outline" style="padding: 6px 15px; font-size: 13px;" onclick="window.location.href='/dashboard-client.html'">Dashboard</button>
-                        <button class="btn-primary" style="padding: 6px 15px; font-size: 13px; background-color: #ff4747; border: none; box-shadow: none;" onclick="logout()">Keluar</button>
+                        <button class="theme-switch-btn" onclick="toggleTheme()" title="Ganti Tema">🌓</button>
+                        <span style="color: var(--text-secondary); font-size: 14px;">Halo, <b style="color:var(--text-primary);">${namaDepan}</b>!</span>
+                        <button class="btn btn-outline btn-sm" onclick="window.location.href='/dashboard-client.html'">Dashboard</button>
+                        <button class="btn btn-danger btn-sm" onclick="logout()">Keluar</button>
                     `;
                 }
             }
+
+            fetchLiveTalents();
         });
 
-        // --- 2. Fungsi Keluar (Logout) ---
         function logout() {
             localStorage.removeItem('matcha_user');
             window.location.reload(); 
         }
 
-        // --- 3. Fungsi Menarik Data Talent dari Backend ---
         function fetchLiveTalents() {
             const grid = document.getElementById('talent-listings');
-            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #8fbc8f;">Mencari talent yang tersedia...</div>`;
 
             fetch('/api/talents')
                 .then(async response => {
                     if (!response.ok) {
                         const errText = await response.text();
-                        throw new Error(`Server Error ${response.status}: Silakan cek terminal VS Code-mu!`);
+                        throw new Error(`Server Error ${response.status}`);
                     }
                     return response.json();
                 })
@@ -234,35 +189,36 @@
                     grid.innerHTML = ''; 
                     
                     if (res.status === 'success') {
-                        if (res.data.length === 0) {
+                        const talents = res.data.slice(0, 3);
+                        
+                        if (talents.length === 0) {
                             grid.innerHTML = `
-                                <div class="talent-card" style="grid-column: 1/-1;">
-                                    <h3>Katalog Masih Kosong</h3>
-                                    <p>Sistem berhasil terhubung! Silakan tambahkan data pengguna dengan role 'talent' di database MariaDB kamu.</p>
+                                <div class="empty-state">
+                                    <h3 style="margin-bottom: 8px; color: var(--text-primary); font-weight: 500;">Katalog Masih Kosong</h3>
+                                    <p>Sistem berhasil terhubung! Belum ada data talent di database.</p>
                                 </div>`;
                             return;
                         }
 
-                        res.data.forEach(talent => {
+                        talents.forEach((talent, index) => {
                             grid.innerHTML += `
-                                <div class="talent-card">
+                                <div class="talent-card animate-in" style="animation-delay: ${0.3 + (index * 0.1)}s;">
                                     <h3>${talent.nama}</h3>
                                     <span class="role-badge">Premium ${talent.role}</span>
                                     <p>Siap menjadi pendamping ceria untuk menemani hari-harimu agar tidak kesepian lagi.</p>
-                                    <button class="btn-outline">Lihat Layanan</button>
+                                    <button class="btn btn-outline btn-block" onclick="window.location.href='/catalog.html'">Lihat Layanan</button>
                                 </div>`;
                         });
                     }
                 })
                 .catch(err => {
                     console.error(err);
-                    grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #ff6b6b; font-weight: bold;">
-                        Ups! Koneksi terputus.<br>
-                        <span style="font-size: 14px; color: #a0a0a0; font-weight: normal;">Pastikan kamu mengakses web lewat <b>http://localhost:7070</b> dan server Java sedang menyala. Detail: ${err.message}</span>
+                    grid.innerHTML = `<div class="empty-state" style="border-color: var(--danger); color: var(--danger);">
+                        <h3 style="margin-bottom: 8px; font-weight: 500;">Koneksi Terputus</h3>
+                        <p style="color: var(--text-muted); font-size: 14px;">Pastikan server Java sedang menyala. Detail: ${err.message}</p>
                     </div>`;
                 });
         }
     </script>
-
 </body>
 </html>

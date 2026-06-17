@@ -1,7 +1,9 @@
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\controller\AuthController.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\controller\BookingController.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\controller\CatalogController.java
+D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\controller\NotificationController.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\controller\PaymentController.java
+D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\controller\ReviewController.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\controller\UserController.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\MatchaApp.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\model\Booking.java
@@ -23,9 +25,15 @@ D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\model\Talent.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\model\User.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\repository\BookingRepository.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\repository\CatalogRepository.java
+D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\repository\NotificationRepository.java
+D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\repository\PaymentRepository.java
+D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\repository\ReviewRepository.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\repository\UserRepository.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\service\AuthService.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\service\BookingService.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\service\CatalogService.java
+D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\service\NotificationService.java
+D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\service\PaymentService.java
+D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\service\ReviewService.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\service\UserService.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\util\DBUtil.java

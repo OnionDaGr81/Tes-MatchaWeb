@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembayaran - Matcha</title>
+    <link rel="stylesheet" href="/css/global.css">
+    <style>
+        .payment-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: var(--spacing-lg);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-xl);
+        }
+
+        .order-summary {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            height: fit-content;
+        }
+
+        .order-summary h3 {
+            color: var(--primary);
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-accent);
+            padding-bottom: var(--spacing-md);
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-label {
+            color: var(--text-secondary);
+        }
+
+        .order-value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-lg);
+            border-top: 2px solid var(--primary);
+            font-size: var(--font-size-lg);
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .payment-form {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+        }
+
+        .payment-form h3 {
+            color: var(--primary);
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-accent);
+            padding-bottom: var(--spacing-md);
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .payment-method {
+            flex: 1;
+            padding: var(--spacing-md);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            background-color: var(--bg-input);
+        }
+
+        .payment-method.active {
+            border-color: var(--primary);
+            background-color: rgba(143, 188, 143, 0.1);
+        }
+
+        .payment-method:hover {
+            border-color: var(--primary);
+        }
+
+        .payment-method-icon {
+            font-size: 24px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .payment-method-name {
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-input-group {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .card-input-full {
+            grid-column: 1 / -1;
+        }
+
+        .security-info {
+            background-color: rgba(143, 188, 143, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .security-info svg {
+            width: 16px;
+            height: 16px;
+            margin-right: var(--spacing-sm);
+            vertical-align: middle;
+        }
+
+        @media (max-width: 768px) {
+            .payment-container {
+                grid-template-columns: 1fr;
+            }
+
+            .card-input-group {
+                grid-template-columns: 1fr;
+            }
+
+            .card-input-full {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo" onclick="window.location.href='/'">🍵 Matcha<span>Companion</span></div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="sidebar-link" onclick="window.history.back()">Kembali</div>
+                <div class="sidebar-link active" onclick="window.location.href='/payment.html'">Pembayaran</div>
+            </div>
+            <div class="sidebar-footer">
+                <button class="btn btn-outline btn-block" onclick="toggleTheme()" style="margin-bottom: 10px;">🌓 Ganti Tema</button>
+                <button class="btn btn-danger btn-block" onclick="logout()">Keluar</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <h3 id="page-title" style="margin: 0; color: var(--text-primary);">Pembayaran</h3>
+                <div class="user-greeting" id="nav-greeting" style="color: var(--text-secondary); font-size: 14px;"></div>
+            </header>
+            
+            <div class="page-content">
+
+    <!-- Main Content -->
+    <div class="payment-container">
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <h3>📋 Ringkasan Pesanan</h3>
+            
+            <div id="booking-details">
+                <!-- Data booking akan diisi dari API -->
+                <div class="spinner" style="margin: 20px auto;"></div>
+            </div>
+
+            <div class="security-info">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5.338 3.59a1 1 0 00-.946.722l-2.332 7.287A1 1 0 00.654 11h.033a1 1 0 00.995-.8l1.348-4.067.72-2.265.02-.06a1 1 0 00-.684-1.215zM16.5 6.437A1 1 0 0016 6h-2.5a1 1 0 110-2H16a1 1 0 01.5.125zm-1 4a1 1 0 00-1 1v2.5a1 1 0 102 0v-2.5a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+                Transaksi Anda dilindungi dengan enkripsi tingkat bank
+            </div>
+        </div>
+
+        <!-- Payment Form -->
+        <div class="payment-form">
+            <h3>Metode Pembayaran</h3>
+
+            <div class="payment-methods">
+                <div class="payment-method active" onclick="selectPaymentMethod('card')">
+                    <div class="payment-method-icon">💳</div>
+                    <div class="payment-method-name">Kartu Kredit/Debit</div>
+                </div>
+                <div class="payment-method" onclick="selectPaymentMethod('bank')">
+                    <div class="payment-method-icon">🏦</div>
+                    <div class="payment-method-name">Transfer Bank</div>
+                </div>
+                <div class="payment-method" onclick="selectPaymentMethod('ewallet')">
+                    <div class="payment-method-icon">📱</div>
+                    <div class="payment-method-name">E-Wallet</div>
+                </div>
+            </div>
+
+            <!-- Card Payment Form -->
+            <div id="card-payment" class="payment-details">
+                <form id="payment-form" onsubmit="processPayment(event)">
+                    <div class="form-group card-input-full">
+                        <label>Nama Pemegang Kartu</label>
+                        <input type="text" id="card-name" placeholder="JOHN DOE" required>
+                    </div>
+
+                    <div class="form-group card-input-full">
+                        <label>Nomor Kartu</label>
+                        <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                    </div>
+
+                    <div class="card-input-group">
+                        <div class="form-group">
+                            <label>Berlaku Hingga</label>
+                            <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" required>
+                        </div>
+                        <div class="form-group">
+                            <label>CVV</label>
+                            <input type="password" id="card-cvv" placeholder="123" maxlength="4" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="checkbox" id="save-card"> 
+                        <label for="save-card" style="display: inline; margin-left: 8px;">Simpan kartu untuk pembayaran berikutnya</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" id="submit-btn">
+                        Bayar Sekarang
+                    </button>
+                </form>
+            </div>
+
+            <!-- Bank Transfer Details -->
+            <div id="bank-payment" class="payment-details" style="display: none;">
+                <div class="alert alert-info">
+                    <strong>Instruksi Transfer:</strong>
+                    <p style="margin-top: 10px;">Silakan transfer ke rekening berikut dan konfirmasi bukti transfer</p>
+                </div>
+
+                <div class="order-item" style="background-color: var(--bg-input); padding: 15px; border-radius: 8px;">
+                    <div>
+                        <div class="order-label">Bank</div>
+                        <div class="order-value">BCA</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="order-label">Nomor Rekening</div>
+                        <div class="order-value">123-456-7890</div>
+                    </div>
+                </div>
+
+                <div class="order-item" style="background-color: var(--bg-input); padding: 15px; border-radius: 8px; margin-top: 10px;">
+                    <div>
+                        <div class="order-label">Atas Nama</div>
+                        <div class="order-value">PT Matcha Indonesia</div>
+                    </div>
+                </div>
+
+                <form id="bank-confirm-form" onsubmit="confirmBankTransfer(event)">
+                    <div class="form-group">
+                        <label>Upload Bukti Transfer</label>
+                        <input type="file" id="transfer-proof" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">
+                        Konfirmasi Transfer
+                    </button>
+                </form>
+            </div>
+
+            <!-- E-Wallet Details -->
+            <div id="ewallet-payment" class="payment-details" style="display: none;">
+                <div class="form-group">
+                    <label>Pilih E-Wallet</label>
+                    <select id="ewallet-provider">
+                        <option value="">-- Pilih Provider --</option>
+                        <option value="gopay">GoPay</option>
+                        <option value="ovo">OVO</option>
+                        <option value="dana">DANA</option>
+                        <option value="linkaja">LinkAja</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Nomor Telepon</label>
+                    <input type="tel" id="ewallet-phone" placeholder="0812xxxxxx" required>
+                </div>
+
+                <button onclick="processEWalletPayment()" class="btn btn-primary btn-block btn-lg">
+                    Lanjut ke E-Wallet
+                </button>
+            </div>
+        </div>
+    </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Theme Logic
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('matcha_theme', newTheme);
+        }
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('matcha_theme') || 'dark');
+    </script>
+    <script src="/js/services/api.js"></script>
+    <script src="/js/utils/helpers.js"></script>
+    <script src="/js/pages/payment.js"></script>
+</body>
+</html>

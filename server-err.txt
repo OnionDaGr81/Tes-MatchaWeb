@@ -1,0 +1,19 @@
+[main] INFO io.javalin.Javalin - Starting Javalin ...
+[main] INFO org.eclipse.jetty.server.Server - jetty-11.0.20; built: 2024-01-29T21:04:22.394Z; git: 922f8dc188f7011e60d0361de585fd4ac4d63064; jvm 17.0.19+10
+[main] INFO org.eclipse.jetty.server.session.DefaultSessionIdManager - Session workerName=node0
+[main] INFO org.eclipse.jetty.server.handler.ContextHandler - Started o.e.j.s.ServletContextHandler@7dc0f706{/,null,AVAILABLE}
+[main] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@37e547da{HTTP/1.1, (http/1.1)}{0.0.0.0:7070}
+[main] INFO org.eclipse.jetty.server.Server - Started Server@4278a03f{STARTING}[11.0.20,sto=0] @525ms
+[main] INFO io.javalin.Javalin - 
+       __                  ___           _____
+      / /___ __   ______ _/ (_)___      / ___/
+ __  / / __ `/ | / / __ `/ / / __ \    / __ \
+/ /_/ / /_/ /| |/ / /_/ / / / / / /   / /_/ /
+\____/\__,_/ |___/\__,_/_/_/_/ /_/    \____/
+
+       https://javalin.io/documentation
+
+[main] INFO io.javalin.Javalin - Javalin started in 316ms \o/
+[main] INFO io.javalin.Javalin - Static file handler added: StaticFileConfig(hostedPath=/, directory=/public, location=CLASSPATH, precompress=false, aliasCheck=null, headers={Cache-Control=max-age=0}, skipFileFunction=Function1<jakarta.servlet.http.HttpServletRequest, java.lang.Boolean>, mimeTypes={}). File system location: 'jar:file:/D:/Tes-MatchaWeb/matchaweb/target/matchaweb-1.0-SNAPSHOT.jar!/public'
+[main] INFO io.javalin.Javalin - Listening on http://localhost:7070/
+[main] INFO io.javalin.Javalin - You are running Javalin 6.1.3 (released March 2, 2024. Your Javalin version is 836 days old. Consider checking for a newer version.).

@@ -11,5 +11,6 @@
         "exclude": [
             "lib/gson-2.14.0.jar"
         ]
-    }
+    },
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

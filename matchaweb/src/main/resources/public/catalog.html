@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog Talent - Matcha</title>
+    <link rel="stylesheet" href="/css/global.css">
+    <style>
+        /* Catalog Specific Styles */
+        .search-bar {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: var(--spacing-lg);
+            border-radius: 12px;
+            margin-bottom: var(--spacing-xl);
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        .search-bar input {
+            flex: 1;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            padding: var(--spacing-md);
+            border-radius: 8px;
+            color: var(--text-primary);
+        }
+
+        .search-bar input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .filters {
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .filter-chip {
+            padding: 8px 16px;
+            background-color: var(--border);
+            border: 1px solid transparent;
+            border-radius: 20px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .filter-chip.active {
+            background-color: var(--primary-dark);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .filter-chip:hover {
+            border-color: var(--primary);
+        }
+
+        .talents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .talent-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all var(--transition-normal);
+            cursor: pointer;
+        }
+
+        .talent-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .talent-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            padding: var(--spacing-lg);
+            text-align: center;
+            color: white;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .talent-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            margin: 0 auto var(--spacing-md) auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            border: 2px solid white;
+        }
+
+        .talent-name {
+            font-size: var(--font-size-lg);
+            font-weight: bold;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .talent-specialty {
+            font-size: var(--font-size-sm);
+            opacity: 0.9;
+        }
+
+        .talent-body {
+            padding: var(--spacing-lg);
+        }
+
+        .talent-info {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .talent-rating {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+            color: var(--warning);
+            font-size: var(--font-size-sm);
+        }
+
+        .talent-price {
+            font-size: var(--font-size-lg);
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .talent-description {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.5;
+        }
+
+        .talent-footer {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .talent-footer button {
+            flex: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-2xl);
+            color: var(--text-secondary);
+        }
+
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: var(--spacing-lg);
+            opacity: 0.3;
+        }
+
+        .loading-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .skeleton {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .skeleton-header {
+            height: 120px;
+            background: linear-gradient(90deg, var(--border) 25%, var(--bg-darker) 50%, var(--border) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        .skeleton-content {
+            padding: var(--spacing-lg);
+        }
+
+        .skeleton-line {
+            height: 12px;
+            background: linear-gradient(90deg, var(--border) 25%, var(--bg-darker) 50%, var(--border) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            margin-bottom: var(--spacing-md);
+            border-radius: 4px;
+        }
+
+        .skeleton-line:last-child {
+            margin-bottom: 0;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo" onclick="window.location.href='/'">🍵 Matcha<span>Companion</span></div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="sidebar-link" onclick="window.history.back()">Kembali</div>
+                <div class="sidebar-link active" onclick="window.location.href='/catalog.html'">🔍 Katalog Talent</div>
+                <div class="sidebar-link" onclick="window.location.href='/my-bookings.html'">Booking Saya</div>
+                <div class="sidebar-link" onclick="window.location.href='/notifications.html'">Notifikasi</div>
+            </div>
+            <div class="sidebar-footer">
+                <button class="btn btn-outline btn-block" onclick="toggleTheme()" style="margin-bottom: 10px;">🌓 Ganti Tema</button>
+                <button class="btn btn-danger btn-block" onclick="logout()">Keluar</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <h3 id="page-title" style="margin: 0; color: var(--text-primary);">Katalog Talent</h3>
+                <div class="user-greeting" id="nav-greeting" style="color: var(--text-secondary); font-size: 14px;"></div>
+            </header>
+            
+            <div class="page-content">
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1 style="color: var(--primary); margin-bottom: var(--spacing-md);">Jelajahi Talent Premium</h1>
+        <p style="color: var(--text-secondary); margin-bottom: var(--spacing-xl);">Temukan pendamping profesional yang sesuai dengan kebutuhan Anda</p>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Cari talent, skill, atau lokasi...">
+            <button class="btn btn-primary" onclick="performSearch()">Cari</button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters" id="filters-container">
+            <div class="filter-chip active" data-filter="all" onclick="filterTalents('all')">Semua</div>
+            <div class="filter-chip" data-filter="rating" onclick="filterTalents('rating')">Rating Tinggi</div>
+            <div class="filter-chip" data-filter="price-low" onclick="filterTalents('price-low')">💰 Harga Rendah</div>
+            <div class="filter-chip" data-filter="price-high" onclick="filterTalents('price-high')">💎 Premium</div>
+        </div>
+
+        <!-- Talents Grid -->
+        <div id="talents-container" class="talents-grid">
+            <!-- Akan diisi oleh JavaScript -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3>Tidak ada talent ditemukan</h3>
+            <p>Coba ubah pencarian atau filter Anda</p>
+        </div>
+    </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Detail Talent -->
+    <div id="detail-modal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>Detail Talent</h2>
+                <button class="modal-close" onclick="closeDetailModal()">✕</button>
+            </div>
+            <div id="detail-modal-body">
+                <!-- Detail akan diisi di sini -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Booking -->
+    <div id="booking-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-talent-name">Pesan Talent</h2>
+                <button class="modal-close" onclick="closeBookingModal()">✕</button>
+            </div>
+            
+            <div id="modal-body">
+                <!-- Services akan diisi di sini -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Theme Logic
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('matcha_theme', newTheme);
+        }
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('matcha_theme') || 'dark');
+    </script>
+    <script src="/js/services/api.js"></script>
+    <script src="/js/utils/helpers.js"></script>
+    <script src="/js/pages/catalog.js"></script>
+</body>
+</html>
