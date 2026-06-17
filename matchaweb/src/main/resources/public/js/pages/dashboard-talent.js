@@ -180,13 +180,16 @@ async function renderServices() {
         container.innerHTML = '';
         services.forEach(service => {
             const item = DOM.createElement('div', 'service-item');
+            const namaLayanan = service.namaLayanan || service.nama || 'Layanan Tanpa Nama';
+            const tarifDasar = service.tarifDasar || service.harga || 0;
+            
             item.innerHTML = `
                 <div>
-                    <h4>${service.nama}</h4>
+                    <h4>${namaLayanan}</h4>
                     <p>${UIUtils.truncate(service.deskripsi || '', 50)}</p>
                 </div>
                 <div style="text-align: right;">
-                    <div style="font-weight: bold; color: var(--primary);">${UIUtils.formatCurrency(service.harga)}</div>
+                    <div style="font-weight: bold; color: var(--primary);">${UIUtils.formatCurrency(tarifDasar)}</div>
                     <small style="color: var(--text-secondary);">${service.durasi || 60} menit</small>
                 </div>
             `;

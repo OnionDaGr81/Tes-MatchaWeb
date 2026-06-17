@@ -15,6 +15,7 @@ public class User {
 
     protected String noTelp;
     protected String role;
+    protected String bio;
 
     // Constructor kosong wajib ada untuk Jackson
     public User() {}
@@ -40,4 +41,7 @@ public class User {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public String getBio() { return bio; }
+    public void setBio(String bio) { this.bio = bio; }
 }

@@ -15,7 +15,8 @@ public class CatalogRepository {
         List<Map<String, Object>> talents = new ArrayList<>();
 
         StringBuilder sql = new StringBuilder(
-            "SELECT u.id, u.nama, u.role, p.bio " +
+            "SELECT u.id, u.nama, u.role, p.bio, " +
+            "(SELECT MIN(tarif_dasar) FROM services s WHERE s.talent_id = u.id) as pricePerHour " +
             "FROM users u " +
             "LEFT JOIN profiles p ON u.id = p.talent_id " +
             "WHERE u.role = 'talent'"
@@ -42,6 +43,10 @@ public class CatalogRepository {
                 talent.put("nama", rs.getString("nama"));
                 talent.put("bio", rs.getString("bio") != null ? rs.getString("bio") : "Belum ada bio.");
                 talent.put("role", rs.getString("role"));
+                
+                double price = rs.getDouble("pricePerHour");
+                talent.put("pricePerHour", rs.wasNull() ? 0 : price);
+                
                 talents.add(talent);
             }
         } catch (SQLException e) {

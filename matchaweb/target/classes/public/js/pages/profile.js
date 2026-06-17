@@ -105,7 +105,8 @@ async function savePersonalInfo(e) {
         const response = await APIService.updateUserProfile(currentUser.id, {
             nama,
             email,
-            noTelp
+            noTelp,
+            bio
         });
 
         // Update localStorage

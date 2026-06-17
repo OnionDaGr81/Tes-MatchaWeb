@@ -165,7 +165,7 @@ function viewTalentDetail(talentId) {
         <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 20px;">
             <div>
                 <span style="color: var(--text-secondary); font-size: 14px;">Tarif Layanan Dasar</span>
-                <div style="color: var(--primary); font-size: 20px; font-weight: bold;">${UIUtils.formatCurrency(talent.pricePerHour)} <span style="font-size: 14px; font-weight: normal; color: var(--text-secondary);">/ jam</span></div>
+                <div style="color: var(--primary); font-size: 20px; font-weight: bold;">${UIUtils.formatCurrency(talent.pricePerHour || 0)} <span style="font-size: 14px; font-weight: normal; color: var(--text-secondary);">/ jam</span></div>
             </div>
             <button class="btn btn-primary" onclick="closeDetailModal(); openBookingModal('${talent.id}')">Pesan Sekarang</button>
         </div>

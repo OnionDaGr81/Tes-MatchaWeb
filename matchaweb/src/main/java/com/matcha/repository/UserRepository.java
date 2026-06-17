@@ -83,7 +83,20 @@ public class UserRepository {
             stmt.setString(2, updatedUser.getEmail());
             stmt.setString(3, updatedUser.getNoTelp());
             stmt.setString(4, userId);
-            return stmt.executeUpdate() > 0;
+            boolean isUpdated = stmt.executeUpdate() > 0;
+            
+            // Simpan bio ke tabel profiles
+            if (updatedUser.getBio() != null && !updatedUser.getBio().isEmpty()) {
+                String sqlProfile = "INSERT INTO profiles (id, talent_id, bio) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE bio = ?";
+                try (PreparedStatement stmtP = conn.prepareStatement(sqlProfile)) {
+                    stmtP.setString(1, java.util.UUID.randomUUID().toString());
+                    stmtP.setString(2, userId);
+                    stmtP.setString(3, updatedUser.getBio());
+                    stmtP.setString(4, updatedUser.getBio());
+                    stmtP.executeUpdate();
+                }
+            }
+            return isUpdated;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
