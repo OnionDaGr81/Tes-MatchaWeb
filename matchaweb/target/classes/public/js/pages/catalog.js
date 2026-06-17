@@ -206,9 +206,12 @@ async function openBookingModal(talentId) {
         `;
 
         services.forEach(service => {
+            const namaLayanan = service.namaLayanan || service.nama || 'Layanan Tanpa Nama';
+            const tarifDasar = service.tarifDasar || service.harga || 0;
+            
             modalBody += `
                 <option value="${service.id}">
-                    ${service.nama} - ${UIUtils.formatCurrency(service.harga)}
+                    ${namaLayanan} - ${UIUtils.formatCurrency(tarifDasar)}
                 </option>
             `;
         });
@@ -275,15 +278,24 @@ async function submitBooking(talentId) {
     try {
         const user = AuthManager.getUser();
         
+        // Calculate waktuSelesai manually to avoid timezone shift
+        const startDateTime = new Date(`${bookingDate}T${bookingTime}:00`);
+        const endDateTime = new Date(startDateTime.getTime() + parseInt(duration) * 60 * 60 * 1000);
+        
+        const endY = endDateTime.getFullYear();
+        const endM = String(endDateTime.getMonth() + 1).padStart(2, '0');
+        const endD = String(endDateTime.getDate()).padStart(2, '0');
+        const endH = String(endDateTime.getHours()).padStart(2, '0');
+        const endMin = String(endDateTime.getMinutes()).padStart(2, '0');
+        const waktuSelesaiStr = `${endY}-${endM}-${endD}T${endH}:${endMin}:00`;
+
         // Create booking object
         const bookingData = {
             clientId: user.id,
             talentId: talentId,
             serviceId: serviceId,
-            bookingDate: bookingDate,
-            bookingTime: bookingTime,
-            duration: parseInt(duration),
-            notes: notes,
+            waktuMulai: `${bookingDate}T${bookingTime}:00`,
+            waktuSelesai: waktuSelesaiStr,
             status: 'pending'
         };
 
