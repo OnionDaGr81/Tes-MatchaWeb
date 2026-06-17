@@ -2,38 +2,28 @@ package com.matcha.model;
 
 public class Payment implements IPayable {
     private String id;
-    private Invoice invoiceId;
+    private String invoiceId;
     private String paymentMethod;
     private String paymentStatus;
 
-    public Payment(String id, Invoice invoiceId, String paymentMethod, String paymentStatus) {
-        this.id = id;
-        this.invoiceId = invoiceId;
-        this.paymentMethod = paymentMethod;
-        this.paymentStatus = paymentStatus;
-    }
+    public Payment() {}
 
     @Override
     public boolean processPayment() {
-        if (this.invoiceId != null && "PENDING".equalsIgnoreCase(this.paymentStatus)) {
-            this.paymentStatus = "SUCCESS";
-            return true;
-        }
-        return false;
+        return "Success".equalsIgnoreCase(this.paymentStatus);
     }
 
     @Override
     public void generateReceipt() {
-        if ("SUCCESS".equalsIgnoreCase(this.paymentStatus)) {
-            this.paymentStatus = "RECEIPT_GENERATED";
-        }
+        // Implementasi kosong: Struk dirender di frontend (HTML/JS) menggunakan JSON
     }
-    
+
+    // --- Getter & Setter ---
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
-    public Invoice getInvoiceId() { return invoiceId; }
-    public void setInvoiceId(Invoice invoiceId) { this.invoiceId = invoiceId; }
+    public String getInvoiceId() { return invoiceId; }
+    public void setInvoiceId(String invoiceId) { this.invoiceId = invoiceId; }
 
     public String getPaymentMethod() { return paymentMethod; }
     public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }

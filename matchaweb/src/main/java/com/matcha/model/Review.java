@@ -1,46 +1,23 @@
-package com.matcha.model; 
+package com.matcha.model;
 
-/**
- *
- * Modul 5: Ulasan dan Reputasi
- */
 public class Review {
-    private String reviewId;
-    private Booking bookingRef;
+    private String id;
+    private String bookingId;
+    private int score; // Rating 1-5
     private String comment;
 
-    public void submitReview(String komentar) {
-        if (validateReviewer()) {
-            this.comment = komentar;
-        }
-    }
+    public Review() {}
 
-    public boolean validateReviewer() {
-        return bookingRef != null
-                && Booking.STATUS_COMPLETED.equals(bookingRef.getStatus());
-    }
+    // --- Getter & Setter ---
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public String getReviewId() {
-        return reviewId;
-    }
+    public String getBookingId() { return bookingId; }
+    public void setBookingId(String bookingId) { this.bookingId = bookingId; }
 
-    public void setReviewId(String reviewId) {
-        this.reviewId = reviewId;
-    }
+    public int getScore() { return score; }
+    public void setScore(int score) { this.score = score; }
 
-    public Booking getBookingRef() {
-        return bookingRef;
-    }
-
-    public void setBookingRef(Booking bookingRef) {
-        this.bookingRef = bookingRef;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
+    public String getComment() { return comment; }
+    public void setComment(String comment) { this.comment = comment; }
 }

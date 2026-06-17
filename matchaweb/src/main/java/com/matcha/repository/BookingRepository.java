@@ -70,27 +70,93 @@ public class BookingRepository {
         return list;
     }
 
-    // ← tambah ini
-    public Booking getBookingById(String bookingId) {
-        String sql = "SELECT * FROM bookings WHERE id = ?";
+    // --- 3. Mengambil Riwayat Booking Berdasarkan User ID & Role ---
+    public List<Booking> getBookingsByUserId(String userId, String role) {
+        List<Booking> bookings = new ArrayList<>(); // Ingat import java.util.ArrayList; & java.util.List;
+        
+        // Cek apakah yang meminta data adalah client atau talent
+        String columnFilter = role.equalsIgnoreCase("talent") ? "talent_id" : "client_id";
+        String sql = "SELECT * FROM bookings WHERE " + columnFilter + " = ? ORDER BY waktu_mulai DESC";
+        
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                Booking b = new Booking();
+                b.setId(rs.getString("id"));
+                b.setClientId(rs.getString("client_id"));
+                b.setTalentId(rs.getString("talent_id"));
+                b.setServiceId(rs.getString("service_id"));
+                
+                // Konversi Timestamp MariaDB kembali ke LocalDateTime Java
+                if (rs.getTimestamp("waktu_mulai") != null) {
+                    b.setWaktuMulai(rs.getTimestamp("waktu_mulai").toLocalDateTime());
+                }
+                if (rs.getTimestamp("waktu_selesai") != null) {
+                    b.setWaktuSelesai(rs.getTimestamp("waktu_selesai").toLocalDateTime());
+                }
+                
+                b.setStatus(rs.getString("status"));
+                bookings.add(b);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookings;
+    }
+
+    // --- 4. Mengubah Status Booking ---
+    public boolean updateBookingStatus(String bookingId, String newStatus) {
+        String sql = "UPDATE bookings SET status = ? WHERE id = ?";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, newStatus);
+            stmt.setString(2, bookingId);
+            
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // --- 5. Mengambil Detail Booking Berdasarkan ID ---
+    public Booking getBookingById(String bookingId) {
+        String sql = "SELECT * FROM bookings WHERE id = ?";
+        
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
             stmt.setString(1, bookingId);
             ResultSet rs = stmt.executeQuery();
+            
             if (rs.next()) {
                 Booking b = new Booking();
                 b.setId(rs.getString("id"));
                 b.setClientId(rs.getString("client_id"));
                 b.setTalentId(rs.getString("talent_id"));
                 b.setServiceId(rs.getString("service_id"));
-                b.setWaktuMulai(rs.getTimestamp("waktu_mulai").toLocalDateTime());
-                b.setWaktuSelesai(rs.getTimestamp("waktu_selesai").toLocalDateTime());
+                
+                // Konversi Timestamp MariaDB kembali ke LocalDateTime Java
+                if (rs.getTimestamp("waktu_mulai") != null) {
+                    b.setWaktuMulai(rs.getTimestamp("waktu_mulai").toLocalDateTime());
+                }
+                if (rs.getTimestamp("waktu_selesai") != null) {
+                    b.setWaktuSelesai(rs.getTimestamp("waktu_selesai").toLocalDateTime());
+                }
+                
                 b.setStatus(rs.getString("status"));
                 return b;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return null; // Mengembalikan null jika ID tidak ditemukan
     }
 }

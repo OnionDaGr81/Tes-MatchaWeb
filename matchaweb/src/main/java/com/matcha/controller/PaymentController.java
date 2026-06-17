@@ -1,100 +1,57 @@
 package com.matcha.controller;
 
-import com.matcha.model.Payment;
 import com.matcha.model.Invoice;
-import com.matcha.model.DiscountRule;
-import com.matcha.model.ProviderDiscountRegistry;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import com.matcha.model.Payment;
+import com.matcha.service.PaymentService;
+import io.javalin.http.Context;
+import java.util.Map;
 
 public class PaymentController {
-    private List<Payment> paymentList; // Koleksi penyimpanan runtime internal data transaksi
+    
+    private final PaymentService paymentService;
 
-    // Konstruktor
     public PaymentController() {
-        this.paymentList = new ArrayList<>();
+        this.paymentService = new PaymentService();
     }
 
-    /**
-     * Mendaftarkan objek transaksi pembayaran baru ke dalam sistem memory
-     */
-    public Payment createPayment(String paymentId, Invoice tagihan, String paymentMethod) {
-        Payment newPayment = new Payment(paymentId, tagihan, paymentMethod, "PENDING");
-        paymentList.add(newPayment);
-        return newPayment;
-    }
+    // ENDPOINT 1: Buat Tagihan (Akses: POST /api/payments/invoice)
+    public void createInvoice(Context ctx) {
+        try {
+            Map<String, Object> body = ctx.bodyAsClass(Map.class);
+            String bookingId = (String) body.get("bookingId");
+            
+            // Konversi tipe data dengan aman
+            double baseRate = Double.parseDouble(body.getOrDefault("baseRate", "0").toString());
+            double extraFee = Double.parseDouble(body.getOrDefault("extraFee", "0").toString());
 
-    /**
-     * Menjalankan eksekusi pemrosesan pembayaran dan pembaruan status transaksi
-     */
-    public boolean executePaymentProcess(String paymentId) {
-        Payment payment = findPaymentById(paymentId);
-        if (payment != null) {
-            boolean isSuccess = payment.processPayment();
-            if (isSuccess) {
-                payment.generateReceipt();
-                return true;
-            }
+            Invoice invoice = paymentService.generateInvoice(bookingId, baseRate, extraFee);
+
+            ctx.status(201).json(Map.of(
+                "status", "success",
+                "message", "Tagihan berhasil dibuat.",
+                "data", invoice
+            ));
+        } catch (Exception e) {
+            ctx.status(400).json(Map.of("status", "error", "message", e.getMessage()));
         }
-        return false;
     }
 
-    /**
-     * Melakukan kalkulasi total pembayaran invoice setelah dipotong akumulasi diskon event provider yang aktif hari ini
-     */
-    public double calculateFinalAmountWithCurrentDiscount(Invoice tagihan) {
-        double originalAmount = tagihan.getTotalAmount();
-        LocalDate today = LocalDate.now();
-        
-        // Memanggil registry terpusat (Singleton Pattern)
-        ProviderDiscountRegistry registry = ProviderDiscountRegistry.getInstance();
-        List<DiscountRule> activeDiscounts = registry.getActiveDiscounts(today);
-        
-        double totalDiscountPercentage = 0.0;
-        for (DiscountRule rule : activeDiscounts) {
-            totalDiscountPercentage += rule.getPercentage();
+    // ENDPOINT 2: Bayar Tagihan (Akses: POST /api/payments/pay)
+    public void payInvoice(Context ctx) {
+        try {
+            Map<String, String> body = ctx.bodyAsClass(Map.class);
+            String invoiceId = body.get("invoiceId");
+            String paymentMethod = body.getOrDefault("paymentMethod", "E-Wallet");
+
+            Payment receipt = paymentService.processPayment(invoiceId, paymentMethod);
+
+            ctx.status(200).json(Map.of(
+                "status", "success",
+                "message", "Pembayaran berhasil! Saldo telah dipotong.",
+                "data", receipt
+            ));
+        } catch (Exception e) {
+            ctx.status(400).json(Map.of("status", "error", "message", e.getMessage()));
         }
-        
-        // Batasi total akumulasi diskon maksimal 100% (1.0) demi keamanan bisnis data
-        if (totalDiscountPercentage > 1.0) {
-            totalDiscountPercentage = 1.0;
-        }
-        
-        return originalAmount * (1.0 - totalDiscountPercentage);
-    }
-
-    /**
-     * Melakukan validasi kecukupan saldo akun sebelum transaksi final diproses
-     */
-    public boolean validateClientBalance(double clientBalance, double totalInvoiceAmount) {
-        return clientBalance >= totalInvoiceAmount;
-    }
-
-    /**
-     * Mencari objek transaksi pembayaran berdasarkan ID internal
-     */
-    public Payment findPaymentById(String paymentId) {
-        for (Payment payment : paymentList) {
-            if (payment.getId().equalsIgnoreCase(paymentId)) {
-                return payment;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Memeriksa status terkini transaksi pembayaran
-     */
-    public String checkPaymentStatus(String paymentId) {
-        Payment payment = findPaymentById(paymentId);
-        if (payment != null) {
-            return payment.getPaymentStatus();
-        }
-        return "PAYMENT_NOT_FOUND";
-    }
-
-    public List<Payment> getPaymentList() {
-        return paymentList;
     }
 }

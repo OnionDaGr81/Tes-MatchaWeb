@@ -6,21 +6,13 @@ public class Invoice {
     private double totalAmount;
     private double extraFee;
 
-    public Invoice(String id, String bookingId, double extraFee) {
-        this.id = id;
-        this.bookingId = bookingId;
-        this.extraFee = extraFee;
-        this.totalAmount = calculateTotal();
-    }
+    public Invoice() {}
 
     public double calculateTotal() {
         return this.totalAmount + this.extraFee;
     }
 
-    public String getInvoiceDetails() {
-        return "Invoice ID: " + id + " | Extra Fee: " + extraFee + " | Total Tagihan: " + totalAmount;
-    }
-
+    // --- Getter & Setter ---
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -31,5 +23,5 @@ public class Invoice {
     public void setTotalAmount(double totalAmount) { this.totalAmount = totalAmount; }
 
     public double getExtraFee() { return extraFee; }
-    public void setExtraFee(double extraFee) { this.extraFee = extraFee; this.totalAmount = calculateTotal(); }
+    public void setExtraFee(double extraFee) { this.extraFee = extraFee; }
 }

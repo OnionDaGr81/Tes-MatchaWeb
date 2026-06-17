@@ -69,4 +69,50 @@ public class BookingController {
             ctx.status(500).json(Map.of("status", "error", "message", "Gagal mengambil data booking."));
         }
     }
+
+    // --- ENDPOINT: Lihat Riwayat Booking ---
+    // Akses: GET /api/bookings?userId=xxx&role=client
+    public void getBookingHistory(Context ctx) {
+        try {
+            String userId = ctx.queryParam("userId");
+            String role = ctx.queryParam("role");
+
+            List<Booking> history = bookingService.getBookingHistory(userId, role);
+
+            ctx.status(200).json(Map.of(
+                "status", "success",
+                "message", "Berhasil mengambil riwayat pesanan.",
+                "data", history
+            ));
+        } catch (Exception e) {
+            ctx.status(400).json(Map.of(
+                "status", "error",
+                "message", e.getMessage() != null ? e.getMessage() : "Terjadi kesalahan."
+            ));
+        }
+    }
+
+    // --- ENDPOINT: Update Status Booking ---
+    // Akses: PUT /api/bookings/{bookingId}/status
+    public void updateBookingStatus(Context ctx) {
+        try {
+            String bookingId = ctx.pathParam("bookingId");
+            
+            // Mengambil status baru dari JSON request body
+            Map<String, String> body = ctx.bodyAsClass(Map.class);
+            String newStatus = body.get("status");
+
+            bookingService.updateStatus(bookingId, newStatus);
+
+            ctx.status(200).json(Map.of(
+                "status", "success",
+                "message", "Status pesanan berhasil diubah menjadi " + newStatus
+            ));
+        } catch (Exception e) {
+            ctx.status(400).json(Map.of(
+                "status", "error",
+                "message", e.getMessage() != null ? e.getMessage() : "Gagal mengupdate status."
+            ));
+        }
+    }
 }

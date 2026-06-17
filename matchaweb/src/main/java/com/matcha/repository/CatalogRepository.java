@@ -16,7 +16,7 @@ public class CatalogRepository {
         
         // Gunakan LEFT JOIN agar talent yang belum punya profil tetap terbaca
         StringBuilder sql = new StringBuilder(
-            "SELECT u.id, u.nama, p.bio " +
+            "SELECT u.id, u.nama, u.role, p.bio " +
             "FROM users u " +
             "LEFT JOIN profiles p ON u.id = p.talent_id " +
             "WHERE u.role = 'talent'"
@@ -44,6 +44,7 @@ public class CatalogRepository {
                 talent.put("id", rs.getString("id"));
                 talent.put("nama", rs.getString("nama"));
                 talent.put("bio", rs.getString("bio") != null ? rs.getString("bio") : "Belum ada bio.");
+                talent.put("role", rs.getString("role"));
                 talents.add(talent);
             }
         } catch (SQLException e) {
