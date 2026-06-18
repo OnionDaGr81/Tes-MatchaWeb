@@ -46,7 +46,7 @@ public class BookingRepository {
         }
     }
 
-    // ← tambah ini
+    // tambah ini
     public List<Booking> getAllBookings() {
         List<Booking> list = new ArrayList<>();
         String sql = "SELECT * FROM bookings";

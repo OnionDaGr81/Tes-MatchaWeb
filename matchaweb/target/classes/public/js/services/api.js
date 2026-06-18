@@ -70,8 +70,16 @@ class APIService {
         return this.request(`/talents/${talentId}/services`);
     }
 
-    static getTalentDetail(talentId) {
-        return this.request(`/talents/${talentId}`);
+    static async getTalentDetail(talentId) {
+        try {
+            return await this.request(`/talents/${talentId}`);
+        } catch (e) {
+            // Fallback since GET /api/talents/{id} endpoint is missing
+            const res = await this.getTalents();
+            const talent = res.data.find(t => t.id === talentId);
+            if (talent) return { data: talent };
+            throw new Error('Talent tidak ditemukan');
+        }
     }
 
     // ===== BOOKING ENDPOINTS =====
@@ -82,8 +90,9 @@ class APIService {
         });
     }
 
-    static getBookings(userId) {
-        return this.request(`/bookings?userId=${userId}`);
+    static getBookings(userId, role) {
+        const r = role || (typeof AuthManager !== 'undefined' ? AuthManager.getUser()?.role : null) || 'client';
+        return this.request(`/bookings?userId=${userId}&role=${r}`);
     }
 
     static getBookingDetail(bookingId) {
@@ -96,15 +105,44 @@ class APIService {
         });
     }
 
+    static updateBookingStatus(bookingId, status) {
+        return this.request(`/bookings/${bookingId}/status`, {
+            method: 'PUT',
+            body: JSON.stringify({ status })
+        });
+    }
+
     // ===== PAYMENT ENDPOINTS =====
     static getPaymentStatus(bookingId) {
         return this.request(`/payments?bookingId=${bookingId}`);
     }
 
-    static processPayment(paymentData) {
-        return this.request('/payments', {
+    static async processPayment(paymentData) {
+        // Step 1: Create invoice
+        const invoiceData = {
+            bookingId: paymentData.bookingId,
+            baseRate: paymentData.amount,
+            extraFee: 0
+        };
+        
+        const invoiceRes = await this.request('/payments/invoice', {
             method: 'POST',
-            body: JSON.stringify(paymentData)
+            body: JSON.stringify(invoiceData)
+        });
+        
+        if (!invoiceRes || invoiceRes.status === 'error' || !invoiceRes.data) {
+            throw new Error(invoiceRes ? invoiceRes.message : 'Gagal membuat tagihan');
+        }
+        
+        // Step 2: Pay invoice
+        const payData = {
+            invoiceId: invoiceRes.data.id,
+            paymentMethod: paymentData.paymentMethod || 'card'
+        };
+        
+        return this.request('/payments/pay', {
+            method: 'POST',
+            body: JSON.stringify(payData)
         });
     }
 
@@ -132,8 +170,9 @@ class APIService {
         });
     }
 
-    static getUserBookings(userId) {
-        return this.request(`/users/${userId}/bookings`);
+    static getUserBookings(userId, role) {
+        const r = role || (typeof AuthManager !== 'undefined' ? AuthManager.getUser()?.role : null) || 'client';
+        return this.request(`/bookings?userId=${userId}&role=${r}`);
     }
 
     // ===== NOTIFICATION ENDPOINTS =====

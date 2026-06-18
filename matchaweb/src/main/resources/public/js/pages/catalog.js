@@ -275,11 +275,23 @@ async function submitBooking(talentId) {
         return;
     }
 
+    if (!AuthManager.requireLogin()) return;
+
     try {
         const user = AuthManager.getUser();
         
         // Calculate waktuSelesai manually to avoid timezone shift
-        const startDateTime = new Date(`${bookingDate}T${bookingTime}:00`);
+        let startTimeStr = `${bookingDate}T${bookingTime}`;
+        if (bookingTime.split(':').length === 2) {
+            startTimeStr += ':00';
+        }
+        
+        const startDateTime = new Date(startTimeStr);
+        if (isNaN(startDateTime.getTime())) {
+            UIUtils.showAlert('Format tanggal atau waktu tidak valid!', 'error');
+            return;
+        }
+
         const endDateTime = new Date(startDateTime.getTime() + parseInt(duration) * 60 * 60 * 1000);
         
         const endY = endDateTime.getFullYear();
@@ -294,7 +306,7 @@ async function submitBooking(talentId) {
             clientId: user.id,
             talentId: talentId,
             serviceId: serviceId,
-            waktuMulai: `${bookingDate}T${bookingTime}:00`,
+            waktuMulai: startTimeStr,
             waktuSelesai: waktuSelesaiStr,
             status: 'pending'
         };

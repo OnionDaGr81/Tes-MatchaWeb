@@ -30,6 +30,35 @@ async function loadBookingDetails(bookingId) {
         const response = await APIService.getBookingDetail(bookingId);
         bookingData = response.data;
 
+        // Calculate duration
+        const start = new Date(bookingData.waktuMulai);
+        const end = new Date(bookingData.waktuSelesai);
+        const diffMs = end - start;
+        let calcDuration = Math.round(diffMs / (1000 * 60 * 60));
+        if (isNaN(calcDuration)) calcDuration = 1;
+        bookingData.duration = Math.max(1, calcDuration);
+
+        // Fetch talent info
+        try {
+            const talentRes = await APIService.getTalentDetail(bookingData.talentId);
+            bookingData.talent = talentRes.data || {};
+        } catch (e) {
+            bookingData.talent = { nama: 'Unknown Talent' };
+        }
+
+        // Fetch service info
+        try {
+            const servicesRes = await APIService.getTalentServices(bookingData.talentId);
+            const services = servicesRes.data || [];
+            bookingData.service = services.find(s => s.id === bookingData.serviceId) || {};
+            bookingData.price = bookingData.service.harga || bookingData.service.tarifDasar || 0;
+        } catch (e) {
+            bookingData.service = { nama: 'Unknown Service' };
+            bookingData.price = 0;
+        }
+
+        bookingData.totalAmount = bookingData.price * bookingData.duration;
+
         // Generate booking number if not exists
         if (!bookingData.bookingNumber) {
             bookingData.bookingNumber = `MTH-${new Date().getFullYear()}-${bookingId.slice(-5).toUpperCase()}`;
@@ -56,9 +85,9 @@ function updateBookingDisplay() {
     DOM.$('#booking-number').textContent = bookingData.bookingNumber || 'MTH-2024-XXXXX';
 
     // Update details
-    DOM.$('#detail-talent').textContent = talent.nama || 'Unknown';
-    DOM.$('#detail-service').textContent = service.nama || 'Unknown';
-    DOM.$('#detail-datetime').textContent = `${UIUtils.formatDate(bookingData.bookingDate)} ${bookingData.bookingTime || ''}`;
+    DOM.$('#detail-talent').textContent = talent.nama || 'Unknown Talent';
+    DOM.$('#detail-service').textContent = service.namaLayanan || service.nama || 'Unknown Service';
+    DOM.$('#detail-datetime').textContent = `${UIUtils.formatDate(bookingData.waktuMulai)}`;
     DOM.$('#detail-duration').textContent = `${bookingData.duration || 1} jam`;
     DOM.$('#detail-amount').textContent = UIUtils.formatCurrency(bookingData.totalAmount || 0);
 }

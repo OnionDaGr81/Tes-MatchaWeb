@@ -35,7 +35,11 @@ public class BookingController {
                 ctx.status(400).json(Map.of("status", "error", "message", "waktuSelesai harus setelah waktuMulai.")); return;
             }
 
-            bookingService.processNewBooking(newBooking);
+            boolean isCreated = bookingService.processNewBooking(newBooking);
+            
+            if (!isCreated) {
+                throw new Exception("Gagal menyimpan booking ke database. Pastikan data (seperti ID Anda atau Layanan) valid.");
+            }
 
             ctx.status(201).json(Map.of(
                 "status", "success",

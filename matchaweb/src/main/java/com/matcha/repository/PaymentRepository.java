@@ -45,4 +45,21 @@ public class PaymentRepository {
             return false;
         }
     }
+
+    // 3. Ambil Booking ID berdasarkan Invoice ID
+    public String getBookingIdByInvoiceId(String invoiceId) {
+        String sql = "SELECT booking_id FROM invoices WHERE id = ?";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, invoiceId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("booking_id");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

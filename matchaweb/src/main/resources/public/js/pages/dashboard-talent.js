@@ -100,26 +100,34 @@ function renderUpcomingBookings(bookings) {
         
         const statusColor = {
             'pending': '#ffc107',
+            'paid': '#17a2b8',
             'confirmed': '#8fbc8f',
             'completed': '#8fbc8f'
-        }[booking.status] || '#a0a0a0';
+        }[booking.status.toLowerCase()] || '#a0a0a0';
+
+        let actionsHTML = '';
+        if (booking.status.toLowerCase() === 'paid' || booking.status.toLowerCase() === 'pending') {
+            actionsHTML = `
+                <div class="booking-actions">
+                    <button class="btn btn-sm btn-primary" onclick="approveBooking('${booking.id}')">
+                        Setujui
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="rejectBooking('${booking.id}')">
+                        Tolak
+                    </button>
+                </div>
+            `;
+        }
 
         item.style.borderLeftColor = statusColor;
         item.innerHTML = `
             <div class="booking-info">
                 <h4>${booking.clientName || 'Client'}</h4>
-                <p>📅 ${UIUtils.formatDate(booking.bookingDate)}</p>
+                <p>📅 ${UIUtils.formatDate(booking.waktuMulai)}</p>
                 <p>⏱️ ${booking.duration || 1} jam - ${UIUtils.formatCurrency(booking.totalAmount || 0)}</p>
                 <span class="badge badge-info">${booking.status}</span>
             </div>
-            <div class="booking-actions">
-                <button class="btn btn-sm btn-primary" onclick="approveBooking('${booking.id}')">
-                    Setujui
-                </button>
-                <button class="btn btn-sm btn-danger" onclick="rejectBooking('${booking.id}')">
-                    Tolak
-                </button>
-            </div>
+            ${actionsHTML}
         `;
 
         container.appendChild(item);
@@ -240,8 +248,7 @@ async function approveBooking(bookingId) {
     if (!confirm('Setujui pesanan ini?')) return;
 
     try {
-        // In a real app, call API to approve
-        // await APIService.approveBooking(bookingId);
+        await APIService.updateBookingStatus(bookingId, 'CONFIRMED');
         
         UIUtils.showAlert('Pesanan disetujui!', 'success');
         loadTalentDashboard();
@@ -258,8 +265,7 @@ async function rejectBooking(bookingId) {
     if (!reason) return;
 
     try {
-        // In a real app, call API to reject
-        // await APIService.rejectBooking(bookingId, reason);
+        await APIService.updateBookingStatus(bookingId, 'CANCELLED');
         
         UIUtils.showAlert('Pesanan ditolak', 'success');
         loadTalentDashboard();

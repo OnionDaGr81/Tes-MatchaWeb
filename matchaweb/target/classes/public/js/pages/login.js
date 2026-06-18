@@ -6,11 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Jika user sudah login, redirect ke dashboard
     if (AuthManager.isLoggedIn()) {
         const user = AuthManager.getUser();
-        if (user.role?.toLowerCase() === 'talent') {
-            window.location.href = '/dashboard-talent.html';
-        } else {
-            window.location.href = '/dashboard-client.html';
-        }
+        window.location.href = '/app.html';
     }
 });
 
@@ -68,14 +64,9 @@ async function handleLogin(e) {
         
         UIUtils.showAlert('Berhasil masuk! Mengalihkan...', 'success');
         
-        // Redirect ke dashboard sesuai role
+        // Redirect ke dashboard
         setTimeout(() => {
-            const user = AuthManager.getUser();
-            if (user.role?.toLowerCase() === 'talent') {
-                window.location.href = '/dashboard-talent.html';
-            } else {
-                window.location.href = '/dashboard-client.html';
-            }
+            window.location.href = '/app.html';
         }, 1500);
     } catch (error) {
         UIUtils.showAlert(error.message || 'Gagal masuk. Periksa email dan password.', 'error');

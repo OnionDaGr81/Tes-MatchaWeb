@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
 /* ============================================
    MATCHA - GLOBAL STYLES & DESIGN SYSTEM
    ============================================ */
@@ -82,8 +84,6 @@ html[data-theme="dark"] {
     --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.6);
     --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.7);
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
 /* Base Styles */
 * {
@@ -455,6 +455,15 @@ html[data-theme="dark"] .btn-primary {
     animation: slideIn var(--transition-normal);
 }
 
+#alert-box {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    box-shadow: var(--shadow-lg);
+}
+
 @keyframes slideIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -598,3 +607,9 @@ html[data-theme="dark"] .btn-primary {
     .top-header { padding: 0 var(--spacing-md); }
     .page-content { padding: var(--spacing-md); }
 }
+
+body.in-iframe .sidebar { display: none !important; }
+body.in-iframe .top-header { display: none !important; }
+body.in-iframe .app-container { display: block !important; padding: 0 !important; }
+body.in-iframe .main-content { margin-left: 0 !important; width: 100% !important; padding: 20px !important; }
+body.in-iframe { background-color: var(--bg-dark); }

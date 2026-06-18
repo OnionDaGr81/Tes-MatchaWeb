@@ -3,14 +3,17 @@ package com.matcha.service;
 import com.matcha.model.Invoice;
 import com.matcha.model.Payment;
 import com.matcha.repository.PaymentRepository;
+import com.matcha.repository.BookingRepository;
 import java.util.UUID;
 
 public class PaymentService {
     
     private final PaymentRepository paymentRepository;
+    private final BookingRepository bookingRepository;
 
     public PaymentService() {
         this.paymentRepository = new PaymentRepository();
+        this.bookingRepository = new BookingRepository();
     }
 
     // --- Logika 1: Membuat Tagihan (Invoice) ---
@@ -45,6 +48,13 @@ public class PaymentService {
         if (!success) {
             throw new Exception("Transaksi gagal diproses oleh sistem.");
         }
+        
+        // Update status booking ke CONFIRMED
+        String bookingId = paymentRepository.getBookingIdByInvoiceId(invoiceId);
+        if (bookingId != null) {
+            bookingRepository.updateBookingStatus(bookingId, "PAID");
+        }
+        
         return payment;
     }
 }

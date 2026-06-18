@@ -223,3 +223,29 @@ class DOM {
         if (el) el.removeEventListener(event, handler);
     }
 }
+
+// SPA Iframe Integration
+document.addEventListener('DOMContentLoaded', () => {
+    // If loaded inside iframe, hide its own sidebar
+    if (window.location.search.includes('iframe=1') || window.self !== window.top) {
+        document.body.classList.add('in-iframe');
+        
+        // Broadcast navigation to parent so hash updates
+        const pushState = history.pushState;
+        history.pushState = function() {
+            pushState.apply(history, arguments);
+            if (window.parent) {
+                const route = window.location.pathname.replace('/', '').replace('.html', '');
+                window.parent.postMessage({ type: 'navigate', route: route }, '*');
+            }
+        };
+    } else {
+        // If loaded directly (not in iframe), force redirect to SPA wrapper!
+        const path = window.location.pathname;
+        const excluded = ['/', '/index.html', '/login.html', '/app.html'];
+        if (!excluded.includes(path)) {
+            const route = path.replace('/', '').replace('.html', '');
+            window.location.href = '/app.html#' + route;
+        }
+    }
+});

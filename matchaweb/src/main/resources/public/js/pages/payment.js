@@ -34,6 +34,35 @@ async function loadBookingDetails(bookingId) {
         const response = await APIService.getBookingDetail(bookingId);
         bookingData = response.data;
 
+        // Calculate duration in hours
+        const start = new Date(bookingData.waktuMulai);
+        const end = new Date(bookingData.waktuSelesai);
+        const diffMs = end - start;
+        let calcDuration = Math.round(diffMs / (1000 * 60 * 60));
+        if (isNaN(calcDuration)) calcDuration = 1;
+        bookingData.duration = Math.max(1, calcDuration);
+
+        // Fetch talent info
+        try {
+            const talentRes = await APIService.getTalentDetail(bookingData.talentId);
+            bookingData.talent = talentRes.data || {};
+        } catch (e) {
+            bookingData.talent = { nama: 'Talent' };
+        }
+
+        // Fetch service info
+        try {
+            const servicesRes = await APIService.getTalentServices(bookingData.talentId);
+            const services = servicesRes.data || [];
+            bookingData.service = services.find(s => s.id === bookingData.serviceId) || {};
+            bookingData.price = bookingData.service.harga || bookingData.service.tarifDasar || 0;
+        } catch (e) {
+            bookingData.service = { nama: 'Layanan' };
+            bookingData.price = 0;
+        }
+
+        bookingData.totalAmount = bookingData.price * bookingData.duration;
+
         // Render order summary
         renderOrderSummary();
     } catch (error) {
@@ -65,7 +94,7 @@ function renderOrderSummary() {
 
         <div class="order-item">
             <div class="order-label">Tanggal</div>
-            <div class="order-value">${UIUtils.formatDate(bookingData.bookingDate) || 'N/A'}</div>
+            <div class="order-value">${UIUtils.formatDate(bookingData.waktuMulai) || 'N/A'}</div>
         </div>
 
         <div class="order-item">

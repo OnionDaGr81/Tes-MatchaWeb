@@ -25,8 +25,42 @@ async function loadBookings() {
 
     try {
         const response = await APIService.getUserBookings(user.id);
-        allBookings = response.data || [];
+        const rawBookings = response.data || [];
 
+        // Fetch additional details for each booking
+        const enhancedBookings = await Promise.all(rawBookings.map(async (booking) => {
+            // Calculate duration
+            const start = new Date(booking.waktuMulai);
+            const end = new Date(booking.waktuSelesai);
+            const diffMs = end - start;
+            let calcDuration = Math.round(diffMs / (1000 * 60 * 60));
+            if (isNaN(calcDuration)) calcDuration = 1;
+            booking.duration = Math.max(1, calcDuration);
+
+            // Fetch talent info
+            try {
+                const talentRes = await APIService.getTalentDetail(booking.talentId);
+                booking.talent = talentRes.data || {};
+            } catch (e) {
+                booking.talent = { nama: 'Unknown Talent' };
+            }
+
+            // Fetch service info
+            try {
+                const servicesRes = await APIService.getTalentServices(booking.talentId);
+                const services = servicesRes.data || [];
+                booking.service = services.find(s => s.id === booking.serviceId) || {};
+                booking.price = booking.service.harga || booking.service.tarifDasar || 0;
+            } catch (e) {
+                booking.service = { nama: 'Unknown Service' };
+                booking.price = 0;
+            }
+
+            booking.totalAmount = booking.price * booking.duration;
+            return booking;
+        }));
+
+        allBookings = enhancedBookings;
         renderBookings(allBookings);
     } catch (error) {
         console.error('Error loading bookings:', error);
@@ -44,7 +78,7 @@ function renderBookings(bookings) {
 
     const filtered = currentFilter === 'all' 
         ? bookings 
-        : bookings.filter(b => b.status === currentFilter);
+        : bookings.filter(b => (b.status || '').toLowerCase() === currentFilter.toLowerCase());
 
     if (filtered.length === 0) {
         container.innerHTML = '';
@@ -69,14 +103,18 @@ function createBookingCard(booking) {
 
     const talent = booking.talent || {};
     const service = booking.service || {};
-    const statusClass = `status-${booking.status}`;
+    const normalizedStatus = (booking.status || '').toLowerCase();
+    const statusClass = `status-${normalizedStatus}`;
 
     // Timeline status
-    const statusSteps = ['Pending', 'Dikonfirmasi', 'Selesai'];
-    const currentStep = booking.status === 'pending' ? 0 : booking.status === 'confirmed' ? 1 : 2;
+    const statusSteps = ['Pending', 'Dibayar', 'Dikonfirmasi', 'Selesai'];
+    let currentStep = 0;
+    if (normalizedStatus === 'paid') currentStep = 1;
+    else if (normalizedStatus === 'confirmed') currentStep = 2;
+    else if (normalizedStatus === 'completed') currentStep = 3;
 
     let timelineHTML = '<div class="timeline-status">';
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 4; i++) {
         const isActive = i <= currentStep ? 'active' : '';
         timelineHTML += `
             <div class="timeline-step ${isActive}">
@@ -89,22 +127,40 @@ function createBookingCard(booking) {
 
     // Action buttons based on status
     let actionButtons = '';
-    if (booking.status === 'pending') {
-        actionButtons = `
-            <button class="btn btn-sm btn-secondary" onclick="cancelBooking('${booking.id}')">
-                Batalkan
-            </button>
-        `;
-    } else if (booking.status === 'completed' && !booking.reviewSubmitted) {
-        actionButtons = `
-            <button class="btn btn-sm btn-primary" onclick="window.location.href='/review.html?bookingId=${booking.id}'">
-                ⭐ Beri Review
-            </button>
-        `;
-    } else if (booking.status === 'completed' && booking.reviewSubmitted) {
-        actionButtons = `
-            <span class="badge badge-success">✓ Review Sudah Dikirim</span>
-        `;
+    const isTalent = AuthManager.getUser()?.role?.toLowerCase() === 'talent';
+
+    if (isTalent) {
+        if (normalizedStatus === 'paid' || normalizedStatus === 'pending') {
+            actionButtons = `
+                <button class="btn btn-sm btn-primary" onclick="approveBooking('${booking.id}')">
+                    Setujui
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="rejectBooking('${booking.id}')">
+                    Tolak
+                </button>
+            `;
+        }
+    } else {
+        if (normalizedStatus === 'pending') {
+            actionButtons = `
+                <button class="btn btn-sm btn-primary" onclick="window.location.href='/payment.html?bookingId=${booking.id}'">
+                    💳 Bayar
+                </button>
+                <button class="btn btn-sm btn-secondary" onclick="cancelBooking('${booking.id}')">
+                    Batalkan
+                </button>
+            `;
+        } else if (normalizedStatus === 'completed' && !booking.reviewSubmitted) {
+            actionButtons = `
+                <button class="btn btn-sm btn-primary" onclick="window.location.href='/review.html?bookingId=${booking.id}'">
+                    ⭐ Beri Review
+                </button>
+            `;
+        } else if (normalizedStatus === 'completed' && booking.reviewSubmitted) {
+            actionButtons = `
+                <span class="badge badge-success">✓ Review Sudah Dikirim</span>
+            `;
+        }
     }
 
     card.innerHTML = `
@@ -123,11 +179,11 @@ function createBookingCard(booking) {
             <div class="booking-info">
                 <div class="info-item">
                     <div class="info-label">Layanan</div>
-                    <div class="info-value">${service.nama || 'Unknown Service'}</div>
+                    <div class="info-value">${service.namaLayanan || service.nama || 'Unknown Service'}</div>
                 </div>
                 <div class="info-item">
                     <div class="info-label">Tanggal & Waktu</div>
-                    <div class="info-value">${UIUtils.formatDate(booking.bookingDate)} ${booking.bookingTime || ''}</div>
+                    <div class="info-value">${UIUtils.formatDate(booking.waktuMulai)}</div>
                 </div>
                 <div class="info-item">
                     <div class="info-label">Durasi</div>
@@ -187,15 +243,47 @@ function viewBookingDetails(bookingId) {
     alert(`
 Pesanan: ${booking.bookingNumber || bookingId}
 Talent: ${booking.talent?.nama}
-Layanan: ${booking.service?.nama}
-Tanggal: ${UIUtils.formatDate(booking.bookingDate)}
-Waktu: ${booking.bookingTime}
+Layanan: ${booking.service?.namaLayanan || booking.service?.nama}
+Tanggal: ${UIUtils.formatDate(booking.waktuMulai)}
 Durasi: ${booking.duration} jam
 Status: ${booking.status}
 Total: ${UIUtils.formatCurrency(booking.totalAmount)}
 
 Catatan: ${booking.notes || '-'}
     `);
+}
+
+/**
+ * Approve booking
+ */
+async function approveBooking(bookingId) {
+    if (!confirm('Setujui pesanan ini?')) return;
+
+    try {
+        await APIService.updateBookingStatus(bookingId, 'CONFIRMED');
+        
+        UIUtils.showAlert('Pesanan disetujui!', 'success');
+        await loadBookings();
+    } catch (error) {
+        UIUtils.showAlert('Gagal menyetujui pesanan', 'error');
+    }
+}
+
+/**
+ * Reject booking
+ */
+async function rejectBooking(bookingId) {
+    const reason = prompt('Alasan penolakan:');
+    if (!reason) return;
+
+    try {
+        await APIService.updateBookingStatus(bookingId, 'CANCELLED');
+        
+        UIUtils.showAlert('Pesanan ditolak', 'success');
+        await loadBookings();
+    } catch (error) {
+        UIUtils.showAlert('Gagal menolak pesanan', 'error');
+    }
 }
 
 /**
@@ -207,9 +295,7 @@ async function cancelBooking(bookingId) {
     const reason = prompt('Alasan pembatalan (opsional):');
 
     try {
-        // In a real app, call API
-        // await APIService.cancelBooking(bookingId);
-
+        await APIService.updateBookingStatus(bookingId, 'CANCELLED');
         UIUtils.showAlert('Pesanan berhasil dibatalkan', 'success');
         await loadBookings();
     } catch (error) {

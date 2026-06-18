@@ -82,14 +82,14 @@ public class MatchaApp {
         });
 
         // === SERVE STATIC HTML FILES MANUAL (kompatibel dengan fat-JAR) ===
-        String[] pages = {"index", "login", "catalog", "dashboard-client", "dashboard-talent",
+        String[] pages = {"index", "login", "app", "catalog", "dashboard-client", "dashboard-talent",
                           "booking-confirmation", "my-bookings", "notifications",
                           "payment", "profile", "review"};
 
         for (String page : pages) {
             final String fileName = page + ".html";
             io.javalin.http.Handler servePage = ctx -> {
-                InputStream is = MatchaApp.class.getResourceAsStream("/public/" + fileName);
+                java.io.InputStream is = MatchaApp.class.getResourceAsStream("/public/" + fileName);
                 if (is != null) {
                     ctx.contentType("text/html");
                     ctx.result(is);
@@ -111,7 +111,7 @@ public class MatchaApp {
 
         // Serve CSS
         app.get("/css/<path>", ctx -> {
-            InputStream is = MatchaApp.class.getResourceAsStream("/public/css/" + ctx.pathParam("path"));
+            java.io.InputStream is = MatchaApp.class.getResourceAsStream("/public/css/" + ctx.pathParam("path"));
             if (is != null) { ctx.contentType("text/css").result(is); }
             else { ctx.status(404); }
         });
@@ -119,7 +119,7 @@ public class MatchaApp {
         // Serve JS
         app.get("/js/<path>", ctx -> {
             String jsPath = ctx.path().substring("/js/".length());
-            InputStream is = MatchaApp.class.getResourceAsStream("/public/js/" + jsPath);
+            java.io.InputStream is = MatchaApp.class.getResourceAsStream("/public/js/" + jsPath);
             if (is != null) { ctx.contentType("application/javascript").result(is); }
             else { ctx.status(404); }
         });
@@ -127,7 +127,7 @@ public class MatchaApp {
         // === GLOBAL EXCEPTION HANDLER ===
         app.exception(Exception.class, (e, ctx) -> {
             System.err.println("[ERROR] " + e.getClass().getSimpleName() + ": " + e.getMessage());
-            ctx.status(500).json(Map.of(
+            ctx.status(500).json(java.util.Map.of(
                 "status", "error",
                 "message", "Terjadi kesalahan internal pada server."
             ));
@@ -136,7 +136,10 @@ public class MatchaApp {
         // === 404 HANDLER — hanya untuk /api, bukan halaman HTML ===
         app.error(404, ctx -> {
             if (ctx.path().startsWith("/api/")) {
-                ctx.json(Map.of("status", "error", "message", "Endpoint tidak ditemukan."));
+                // Hanya overwrite jika response body masih kosong (artinya benar-benar route tidak ada, bukan dari controller)
+                if (ctx.result() == null || ctx.result().isEmpty()) {
+                    ctx.json(java.util.Map.of("status", "error", "message", "Endpoint tidak ditemukan."));
+                }
             }
         });
 
