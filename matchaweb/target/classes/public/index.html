@@ -143,6 +143,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const userSession = localStorage.getItem('matcha_user');
+            let isTalent = false;
             
             if (userSession) {
                 const user = JSON.parse(userSession);
@@ -150,12 +151,31 @@
                 const namaDepan = user.nama ? user.nama.split(' ')[0] : 'User'; 
 
                 if (user.role && user.role.toLowerCase() === 'talent') {
+                    isTalent = true;
                     navContainer.innerHTML = `
                         <button class="theme-switch-btn" onclick="toggleTheme()" title="Ganti Tema">🌓</button>
                         <span style="color: var(--text-secondary); font-size: 14px;">Halo, <b style="color:var(--text-primary);">${namaDepan}</b>!</span>
                         <button class="btn btn-outline btn-sm" onclick="window.location.href='/dashboard-talent.html'">Ruang Talent</button>
                         <button class="btn btn-danger btn-sm" onclick="logout()">Keluar</button>
                     `;
+                    
+                    // Update Hero Section for Talent
+                    const heroTitle = document.querySelector('.hero h1');
+                    if (heroTitle) heroTitle.innerHTML = `Selamat Datang, <span>${namaDepan}</span>`;
+                    
+                    const heroDesc = document.querySelector('.hero p');
+                    if (heroDesc) heroDesc.textContent = 'Kelola layanan, jadwal, dan interaksi dengan klienmu melalui Ruang Talent. Tingkatkan terus performamu!';
+                    
+                    const heroBtn = document.querySelector('.hero .btn-primary');
+                    if (heroBtn) {
+                        heroBtn.textContent = 'Buka Ruang Talent';
+                        heroBtn.onclick = () => window.location.href = '/dashboard-talent.html';
+                    }
+
+                    // Sembunyikan daftar talent pilihan untuk akun talent
+                    const mainContainer = document.querySelector('main.container');
+                    if (mainContainer) mainContainer.style.display = 'none';
+
                 } else {
                     navContainer.innerHTML = `
                         <button class="theme-switch-btn" onclick="toggleTheme()" title="Ganti Tema">🌓</button>
@@ -166,7 +186,9 @@
                 }
             }
 
-            fetchLiveTalents();
+            if (!isTalent) {
+                fetchLiveTalents();
+            }
         });
 
         function logout() {
