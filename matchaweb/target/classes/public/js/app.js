@@ -30,58 +30,68 @@ class Router {
         // Setup iframe load listener
         const frame = document.getElementById('main-frame');
         frame.addEventListener('load', () => {
-            document.getElementById('loading-overlay').classList.add('hidden');
-            
-            try {
-                // Forcefully hide sidebar and header from parent to bypass CSS cache!
-                const fDoc = frame.contentWindow.document;
-                const sidebar = fDoc.querySelector('.sidebar');
-                if (sidebar) sidebar.style.setProperty('display', 'none', 'important');
+            const finishLoad = () => {
+                document.getElementById('loading-overlay').classList.add('hidden');
                 
-                const header = fDoc.querySelector('.top-header');
-                if (header) header.style.setProperty('display', 'none', 'important');
-                
-                const container = fDoc.querySelector('.app-container');
-                if (container) {
-                    container.style.setProperty('display', 'block', 'important');
-                    container.style.setProperty('padding', '0', 'important');
+                try {
+                    // Forcefully hide sidebar and header from parent to bypass CSS cache!
+                    const fDoc = frame.contentWindow.document;
+                    const sidebar = fDoc.querySelector('.sidebar');
+                    if (sidebar) sidebar.style.setProperty('display', 'none', 'important');
+                    
+                    const header = fDoc.querySelector('.top-header');
+                    if (header) header.style.setProperty('display', 'none', 'important');
+                    
+                    const container = fDoc.querySelector('.app-container');
+                    if (container) {
+                        container.style.setProperty('display', 'block', 'important');
+                        container.style.setProperty('padding', '0', 'important');
+                    }
+                    
+                    const mainContent = fDoc.querySelector('.main-content');
+                    if (mainContent) {
+                        mainContent.style.setProperty('margin-left', '0', 'important');
+                        mainContent.style.setProperty('width', '100%', 'important');
+                        mainContent.style.setProperty('padding', '20px', 'important');
+                    }
+                    fDoc.body.style.backgroundColor = 'var(--bg-dark)';
+                    fDoc.body.classList.add('in-iframe'); // just in case
+                } catch (err) {
+                    console.error("Iframe style injection failed:", err);
                 }
                 
-                const mainContent = fDoc.querySelector('.main-content');
-                if (mainContent) {
-                    mainContent.style.setProperty('margin-left', '0', 'important');
-                    mainContent.style.setProperty('width', '100%', 'important');
-                    mainContent.style.setProperty('padding', '20px', 'important');
+                // Sync URL if iframe navigates internally
+                try {
+                    const frameUrl = frame.contentWindow.location.pathname;
+                    const search = frame.contentWindow.location.search;
+                    const path = frameUrl.replace('/', '').replace('.html', '');
+                    
+                    // Keep query params but remove iframe=1
+                    let queryToKeep = new URLSearchParams(search);
+                    queryToKeep.delete('iframe');
+                    let newHash = path;
+                    const qStr = queryToKeep.toString();
+                    if (qStr) newHash += '?' + qStr;
+                    
+                    if (newHash && window.location.hash !== '#' + newHash) {
+                        Router.isSyncingHash = true;
+                        window.location.hash = newHash;
+                        setTimeout(() => Router.isSyncingHash = false, 100);
+                    }
+                    this.updateSidebarActive(path);
+                    this.updateTitle(path);
+                } catch (err) {
+                    // Cross-origin or other error
                 }
-                fDoc.body.style.backgroundColor = 'var(--bg-dark)';
-                fDoc.body.classList.add('in-iframe'); // just in case
-            } catch (err) {
-                console.error("Iframe style injection failed:", err);
-            }
-            
-            // Sync URL if iframe navigates internally
-            try {
-                const frameUrl = frame.contentWindow.location.pathname;
-                const search = frame.contentWindow.location.search;
-                const path = frameUrl.replace('/', '').replace('.html', '');
-                
-                // Keep query params but remove iframe=1
-                let queryToKeep = new URLSearchParams(search);
-                queryToKeep.delete('iframe');
-                let newHash = path;
-                const qStr = queryToKeep.toString();
-                if (qStr) newHash += '?' + qStr;
-                
-                if (newHash && window.location.hash !== '#' + newHash) {
-                    Router.isSyncingHash = true;
-                    window.location.hash = newHash;
-                    setTimeout(() => Router.isSyncingHash = false, 100);
-                }
-                this.updateSidebarActive(path);
-                this.updateTitle(path);
-            } catch (err) {
-                // Cross-origin or other error
-            }
+            };
+
+            // Use CSS transition instead of View Transitions API due to iframe crash issues
+            frame.style.opacity = '0';
+            finishLoad();
+            setTimeout(() => {
+                frame.style.transition = 'opacity 0.3s ease';
+                frame.style.opacity = '1';
+            }, 50);
         });
     }
     
@@ -104,20 +114,38 @@ class Router {
     }
     
     static navigate(route) {
-        document.getElementById('loading-overlay').classList.remove('hidden');
-        
-        const [path, query] = route.split('?');
+        const startNav = () => {
+            document.getElementById('loading-overlay').classList.remove('hidden');
+            
+            const [path, query] = route.split('?');
+            const frame = document.getElementById('main-frame');
+            const newSrc = query ? `/${path}.html?iframe=1&${query}` : `/${path}.html?iframe=1`;
+            
+            if (frame.contentWindow && frame.contentWindow.location) {
+                try {
+                    if (frame.contentWindow.location.pathname + frame.contentWindow.location.search !== newSrc) {
+                        frame.src = newSrc;
+                    } else {
+                        document.getElementById('loading-overlay').classList.add('hidden');
+                    }
+                } catch(e) {
+                    frame.src = newSrc;
+                }
+            } else {
+                frame.src = newSrc;
+            }
+            
+            this.updateSidebarActive(path);
+            this.updateTitle(path);
+        };
+
+        // Use CSS transition instead of View Transitions API due to iframe crash issues
         const frame = document.getElementById('main-frame');
-        const newSrc = query ? `/${path}.html?iframe=1&${query}` : `/${path}.html?iframe=1`;
-        
-        if (frame.contentWindow.location.pathname + frame.contentWindow.location.search !== newSrc) {
-            frame.src = newSrc;
-        } else {
-            document.getElementById('loading-overlay').classList.add('hidden');
+        if (frame) {
+            frame.style.transition = 'none';
+            frame.style.opacity = '0';
         }
-        
-        this.updateSidebarActive(path);
-        this.updateTitle(path);
+        startNav();
     }
     
     static updateSidebarActive(route) {

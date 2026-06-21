@@ -250,6 +250,13 @@ html[data-theme="dark"] .sidebar-link.active {
     gap: var(--spacing-md);
 }
 
+.sidebar-footer .btn {
+    border-radius: var(--radius-xl);
+    padding: 12px 18px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
 .main-content {
     flex: 1;
     margin-left: var(--sidebar-width);
@@ -335,11 +342,54 @@ nav.old-nav .nav-right {
     font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: var(--spacing-sm);
+}
+
+.btn:active {
+    transform: scale(0.96);
+}
+
+/* ===== BUTTON LOADING STATE ===== */
+.btn.btn-loading {
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.btn.btn-loading::after {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-right-color: currentColor;
+    border-radius: 50%;
+    animation: buttonSpinner 0.6s linear infinite;
+}
+
+.btn-primary.btn-loading::after,
+.btn-danger.btn-loading::after {
+    border-top-color: #fff;
+    border-right-color: #fff;
+}
+
+.btn-outline.btn-loading::after {
+    border-top-color: var(--primary);
+    border-right-color: var(--primary);
+}
+
+@keyframes buttonSpinner {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .btn-primary {
@@ -485,18 +535,117 @@ html[data-theme="dark"] .btn-primary {
 .alert.warning { background-color: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid var(--warning); }
 .alert.info { background-color: rgba(59, 130, 246, 0.1); color: var(--info); border: 1px solid var(--info); }
 
+/* ===== FILTER CHIPS ===== */
+.filter-chip {
+    padding: var(--spacing-sm) 16px;
+    background-color: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-2xl);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.filter-chip.active {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.filter-chip:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.filter-chip.active:hover {
+    color: white;
+}
+
+.filter-chip:active {
+    transform: scale(0.96);
+}
+
 /* ===== CARDS & CONTAINERS ===== */
 .card {
     background-color: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
     padding: var(--spacing-lg);
-    transition: all 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
     border-color: var(--border-accent);
-    box-shadow: var(--shadow-sm);
+}
+
+/* Animations */
+@view-transition {
+    navigation: auto;
+}
+
+@keyframes cardEntry {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.talent-card, .booking-card, .stat-card, .notification-card, .review-card, .profile-panel, .history-panel, .booking-item, .card {
+    animation: cardEntry 0.3s ease-out forwards;
+}
+
+/* ===== SKELETON LOADER ===== */
+.skeleton {
+    background: linear-gradient(90deg, var(--bg-input) 25%, var(--border) 50%, var(--bg-input) 75%);
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.5s infinite;
+    border-radius: var(--radius-md);
+}
+
+@keyframes skeletonShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton-text {
+    height: 14px;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+.skeleton-text.short {
+    width: 60%;
+}
+
+.skeleton-title {
+    height: 20px;
+    margin-bottom: 12px;
+    width: 80%;
+}
+
+.skeleton-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.skeleton-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+/* ===== IMAGE LAZY LOAD ===== */
+.img-lazy {
+    filter: blur(5px);
+    transition: filter 0.3s ease-in-out;
+}
+.img-lazy.loaded {
+    filter: blur(0);
 }
 
 .card-header {

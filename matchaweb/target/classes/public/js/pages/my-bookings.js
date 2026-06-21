@@ -24,6 +24,12 @@ async function loadBookings() {
     const container = DOM.$('#bookings-container');
 
     try {
+        // Show skeleton loaders
+        showSkeletonLoaders();
+
+        // Simulate small delay for loading state visibility
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
         const response = await APIService.getUserBookings(user.id);
         const rawBookings = response.data || [];
 
@@ -66,6 +72,44 @@ async function loadBookings() {
         console.error('Error loading bookings:', error);
         UIUtils.showAlert('Gagal memuat pesanan', 'error');
         container.innerHTML = '<div class="empty-state"><h3>❌ Terjadi kesalahan</h3></div>';
+    }
+}
+
+/**
+ * Show skeleton loading placeholders
+ */
+function showSkeletonLoaders() {
+    const container = DOM.$('#bookings-container');
+    container.innerHTML = '';
+    
+    for (let i = 0; i < 3; i++) {
+        const skeleton = DOM.createElement('div', 'skeleton-card');
+        skeleton.innerHTML = `
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 15px;">
+                <div style="flex: 1;">
+                    <div class="skeleton skeleton-title" style="width: 150px;"></div>
+                    <div class="skeleton skeleton-text short" style="width: 100px;"></div>
+                </div>
+                <div class="skeleton" style="width: 80px; height: 24px; border-radius: 12px;"></div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <div class="skeleton" style="width: 40px; height: 40px; border-radius: 50%;"></div>
+                <div class="skeleton" style="width: 40px; height: 40px; border-radius: 50%;"></div>
+                <div class="skeleton" style="width: 40px; height: 40px; border-radius: 50%;"></div>
+                <div class="skeleton" style="width: 40px; height: 40px; border-radius: 50%;"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+                <div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+                <div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+                <div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text short"></div></div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border); padding-top: 15px;">
+                <div class="skeleton" style="width: 100px; height: 32px; border-radius: var(--radius-md);"></div>
+                <div class="skeleton" style="width: 100px; height: 32px; border-radius: var(--radius-md);"></div>
+            </div>
+        `;
+        container.appendChild(skeleton);
     }
 }
 
@@ -132,10 +176,10 @@ function createBookingCard(booking) {
     if (isTalent) {
         if (normalizedStatus === 'paid' || normalizedStatus === 'pending') {
             actionButtons = `
-                <button class="btn btn-sm btn-primary" onclick="approveBooking('${booking.id}')">
+                <button class="btn btn-sm btn-primary" onclick="approveBooking('${booking.id}', this)">
                     Setujui
                 </button>
-                <button class="btn btn-sm btn-danger" onclick="rejectBooking('${booking.id}')">
+                <button class="btn btn-sm btn-danger" onclick="rejectBooking('${booking.id}', this)">
                     Tolak
                 </button>
             `;
@@ -146,7 +190,7 @@ function createBookingCard(booking) {
                 <button class="btn btn-sm btn-primary" onclick="window.location.href='/payment.html?bookingId=${booking.id}'">
                     💳 Bayar
                 </button>
-                <button class="btn btn-sm btn-secondary" onclick="cancelBooking('${booking.id}')">
+                <button class="btn btn-sm btn-secondary" onclick="cancelBooking('${booking.id}', this)">
                     Batalkan
                 </button>
             `;
@@ -236,70 +280,117 @@ function filterBookings(status) {
  * View booking details
  */
 function viewBookingDetails(bookingId) {
-    // For now, just show in alert or could redirect to detail page
     const booking = allBookings.find(b => b.id === bookingId);
     if (!booking) return;
 
-    alert(`
-Pesanan: ${booking.bookingNumber || bookingId}
-Talent: ${booking.talent?.nama}
-Layanan: ${booking.service?.namaLayanan || booking.service?.nama}
-Tanggal: ${UIUtils.formatDate(booking.waktuMulai)}
-Durasi: ${booking.duration} jam
-Status: ${booking.status}
-Total: ${UIUtils.formatCurrency(booking.totalAmount)}
+    const modalBody = DOM.$('#booking-detail-modal-body');
+    if (!modalBody) return;
 
-Catatan: ${booking.notes || '-'}
-    `);
+    modalBody.innerHTML = `
+        <div style="display: grid; gap: var(--spacing-md);">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: var(--spacing-sm);">
+                <span style="color: var(--text-secondary);">ID Pesanan:</span>
+                <strong>${booking.bookingNumber || bookingId.slice(-6).toUpperCase()}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: var(--spacing-sm);">
+                <span style="color: var(--text-secondary);">Talent:</span>
+                <strong>${booking.talent?.nama || 'Unknown Talent'}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: var(--spacing-sm);">
+                <span style="color: var(--text-secondary);">Layanan:</span>
+                <strong>${booking.service?.namaLayanan || booking.service?.nama || 'Unknown Service'}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: var(--spacing-sm);">
+                <span style="color: var(--text-secondary);">Tanggal:</span>
+                <strong>${UIUtils.formatDate(booking.waktuMulai)}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: var(--spacing-sm);">
+                <span style="color: var(--text-secondary);">Durasi:</span>
+                <strong>${booking.duration} jam</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: var(--spacing-sm);">
+                <span style="color: var(--text-secondary);">Status:</span>
+                <strong style="color: ${UIUtils.getStatusColor(booking.status)}; text-transform: uppercase;">${booking.status}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: var(--spacing-sm);">
+                <span style="color: var(--text-secondary);">Total Pembayaran:</span>
+                <strong style="color: var(--primary); font-size: var(--font-size-lg);">${UIUtils.formatCurrency(booking.totalAmount)}</strong>
+            </div>
+            ${booking.notes ? `
+            <div style="background-color: var(--bg-input); padding: var(--spacing-md); border-radius: var(--radius-md); margin-top: var(--spacing-sm);">
+                <span style="display: block; color: var(--text-secondary); margin-bottom: var(--spacing-xs); font-size: var(--font-size-sm);">Catatan:</span>
+                <p style="margin: 0;">${booking.notes}</p>
+            </div>
+            ` : ''}
+        </div>
+    `;
+
+    DOM.$('#booking-detail-modal').style.display = 'flex';
+}
+
+/**
+ * Close booking detail modal
+ */
+function closeBookingDetailModal() {
+    DOM.$('#booking-detail-modal').style.display = 'none';
 }
 
 /**
  * Approve booking
  */
-async function approveBooking(bookingId) {
+async function approveBooking(bookingId, btn) {
     if (!confirm('Setujui pesanan ini?')) return;
 
+    if (btn) btn.classList.add('btn-loading');
     try {
+        await new Promise(r => setTimeout(r, 600)); // Simulate delay
         await APIService.updateBookingStatus(bookingId, 'CONFIRMED');
         
         UIUtils.showAlert('Pesanan disetujui!', 'success');
         await loadBookings();
     } catch (error) {
         UIUtils.showAlert('Gagal menyetujui pesanan', 'error');
+        if (btn) btn.classList.remove('btn-loading');
     }
 }
 
 /**
  * Reject booking
  */
-async function rejectBooking(bookingId) {
+async function rejectBooking(bookingId, btn) {
     const reason = prompt('Alasan penolakan:');
     if (!reason) return;
 
+    if (btn) btn.classList.add('btn-loading');
     try {
+        await new Promise(r => setTimeout(r, 600)); // Simulate delay
         await APIService.updateBookingStatus(bookingId, 'CANCELLED');
         
         UIUtils.showAlert('Pesanan ditolak', 'success');
         await loadBookings();
     } catch (error) {
         UIUtils.showAlert('Gagal menolak pesanan', 'error');
+        if (btn) btn.classList.remove('btn-loading');
     }
 }
 
 /**
  * Cancel booking
  */
-async function cancelBooking(bookingId) {
+async function cancelBooking(bookingId, btn) {
     if (!confirm('Yakin ingin membatalkan pesanan ini?')) return;
 
     const reason = prompt('Alasan pembatalan (opsional):');
 
+    if (btn) btn.classList.add('btn-loading');
     try {
+        await new Promise(r => setTimeout(r, 600)); // Simulate delay
         await APIService.updateBookingStatus(bookingId, 'CANCELLED');
         UIUtils.showAlert('Pesanan berhasil dibatalkan', 'success');
         await loadBookings();
     } catch (error) {
         UIUtils.showAlert('Gagal membatalkan pesanan: ' + error.message, 'error');
+        if (btn) btn.classList.remove('btn-loading');
     }
 }
 

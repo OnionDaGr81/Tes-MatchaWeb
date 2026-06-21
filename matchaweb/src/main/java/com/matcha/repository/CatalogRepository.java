@@ -24,7 +24,7 @@ public class CatalogRepository {
 
         boolean hasKeyword = (keyword != null && !keyword.trim().isEmpty());
         if (hasKeyword) {
-            sql.append(" AND (u.nama LIKE ? OR p.bio LIKE ?)");
+            sql.append(" AND (u.nama LIKE ? OR p.bio LIKE ? OR EXISTS (SELECT 1 FROM services s2 WHERE s2.talent_id = u.id AND (s2.nama_layanan LIKE ? OR s2.deskripsi LIKE ?)))");
         }
 
         try (Connection conn = DBUtil.getConnection();
@@ -34,6 +34,8 @@ public class CatalogRepository {
                 String searchPattern = "%" + keyword + "%";
                 stmt.setString(1, searchPattern);
                 stmt.setString(2, searchPattern);
+                stmt.setString(3, searchPattern);
+                stmt.setString(4, searchPattern);
             }
 
             ResultSet rs = stmt.executeQuery();

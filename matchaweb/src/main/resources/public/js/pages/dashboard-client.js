@@ -30,10 +30,25 @@
         function fetchBookingHistory() {
             const container = document.getElementById('booking-container');
             
+            // Show skeletons
+            container.innerHTML = '';
+            for (let i = 0; i < 3; i++) {
+                const skeleton = document.createElement('div');
+                skeleton.className = 'booking-card';
+                skeleton.innerHTML = `
+                    <div class="skeleton skeleton-title" style="width: 150px; margin-bottom: 8px;"></div>
+                    <div class="skeleton skeleton-text short" style="margin-bottom: 5px;"></div>
+                    <div class="skeleton skeleton-text" style="width: 80%; margin-bottom: 10px;"></div>
+                    <div class="skeleton" style="width: 100px; height: 24px; border-radius: 12px; display: inline-block;"></div>
+                `;
+                container.appendChild(skeleton);
+            }
+            
             fetch(`/api/bookings?userId=${currentUser.id}&role=client`)
                 .then(res => res.json())
                 .then(result => {
-                    container.innerHTML = ''; 
+                    setTimeout(() => {
+                        container.innerHTML = ''; 
 
                     if (result.status === 'success') {
                         const bookings = result.data;
@@ -64,6 +79,7 @@
                             `;
                         });
                     }
+                    }, 300);
                 })
                 .catch(err => {
                     container.innerHTML = `<p class="empty-state" style="color: var(--danger);">Gagal menarik data dari server.</p>`;

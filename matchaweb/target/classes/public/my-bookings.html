@@ -19,25 +19,7 @@
             flex-wrap: wrap;
         }
 
-        .filter-chip {
-            padding: var(--spacing-sm) 16px;
-            background-color: var(--border);
-            border: 1px solid transparent;
-            border-radius: var(--radius-2xl);
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all var(--transition-normal);
-        }
 
-        .filter-chip.active {
-            background-color: var(--primary-dark);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        .filter-chip:hover {
-            border-color: var(--primary);
-        }
 
         .bookings-grid {
             display: grid;
@@ -274,6 +256,22 @@
     </div>
             </div>
         </main>
+    </div>
+
+    <!-- Booking Detail Modal -->
+    <div id="booking-detail-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Detail Pesanan</h2>
+                <button class="modal-close" onclick="closeBookingDetailModal()">✕</button>
+            </div>
+            <div id="booking-detail-modal-body" style="padding: var(--spacing-lg);">
+                <!-- Detail Content goes here -->
+            </div>
+            <div style="padding: var(--spacing-lg); text-align: right; border-top: 1px solid var(--border);">
+                <button class="btn btn-secondary" onclick="closeBookingDetailModal()">Tutup</button>
+            </div>
+        </div>
     </div>
 
     <!-- Scripts -->

@@ -32,6 +32,12 @@ async function loadNotifications() {
     const container = DOM.$('#notifications-container');
 
     try {
+        // Show skeletons
+        showSkeletonLoaders();
+
+        // Simulate small delay for loading state visibility
+        await new Promise(resolve => setTimeout(resolve, 300));
+
         const response = await APIService.getNotifications(user.id);
         allNotifications = response.data || [];
 
@@ -39,6 +45,29 @@ async function loadNotifications() {
     } catch (error) {
         console.error('Error loading notifications:', error);
         container.innerHTML = '<div class="empty-state"><p>❌ Gagal memuat notifikasi</p></div>';
+    }
+}
+
+/**
+ * Show skeleton loaders
+ */
+function showSkeletonLoaders() {
+    const container = DOM.$('#notifications-container');
+    container.innerHTML = '';
+    for(let i=0; i<4; i++) {
+        const skel = DOM.createElement('div', 'notification-item');
+        skel.innerHTML = `
+            <div style="display: flex; flex: 1; align-items: flex-start;">
+                <div class="skeleton skeleton-avatar" style="width: 40px; height: 40px; margin-right: 15px;"></div>
+                <div class="notification-content" style="flex: 1;">
+                    <div class="skeleton skeleton-title" style="width: 200px;"></div>
+                    <div class="skeleton skeleton-text" style="width: 80%;"></div>
+                    <div class="skeleton skeleton-text short" style="width: 60px;"></div>
+                </div>
+            </div>
+            <div class="skeleton" style="width: 80px; height: 30px; border-radius: 15px;"></div>
+        `;
+        container.appendChild(skel);
     }
 }
 
@@ -98,7 +127,7 @@ function createNotificationItem(notification) {
                 </button>
             ` : ''}
             ${!notification.isRead ? `
-                <button class="btn btn-sm btn-secondary" onclick="markAsRead('${notification.id}')">
+                <button class="btn btn-sm btn-secondary" onclick="markAsRead('${notification.id}', this, event)">
                     ✓ Baca
                 </button>
             ` : ''}
@@ -149,8 +178,15 @@ function filterNotifications(type) {
     currentFilter = type;
 
     // Update filter UI
+    const typeToTextMap = {
+        'all': 'semua',
+        'booking': 'pesanan',
+        'payment': 'pembayaran',
+        'review': 'review'
+    };
+
     DOM.$$('.filter-btn').forEach(btn => {
-        if (btn.textContent.toLowerCase().includes(type === 'all' ? 'semua' : type)) {
+        if (btn.textContent.toLowerCase().includes(typeToTextMap[type])) {
             DOM.addClass(btn, 'active');
         } else {
             DOM.removeClass(btn, 'active');
@@ -163,8 +199,12 @@ function filterNotifications(type) {
 /**
  * Mark notification as read
  */
-async function markAsRead(notificationId) {
+async function markAsRead(notificationId, btn, e) {
+    if (e) e.stopPropagation();
+    if (btn) btn.classList.add('btn-loading');
+
     try {
+        await new Promise(r => setTimeout(r, 400)); // Simulate delay
         await APIService.markNotificationAsRead(notificationId);
         
         // Update local data
@@ -176,6 +216,7 @@ async function markAsRead(notificationId) {
         renderNotifications(allNotifications);
     } catch (error) {
         console.error('Error marking notification as read:', error);
+        if (btn) btn.classList.remove('btn-loading');
     }
 }
 

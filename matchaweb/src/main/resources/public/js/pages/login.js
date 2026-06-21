@@ -52,8 +52,9 @@ async function handleLogin(e) {
     try {
         // Tampilkan loading
         const btn = DOM.$('#login-form button[type="submit"]');
-        const originalText = btn.textContent;
         btn.disabled = true;
+        btn.classList.add('btn-loading');
+        const originalText = btn.textContent;
         btn.textContent = 'Sedang masuk...';
 
         // Call API
@@ -74,6 +75,7 @@ async function handleLogin(e) {
         // Restore button
         const btn = DOM.$('#login-form button[type="submit"]');
         btn.disabled = false;
+        btn.classList.remove('btn-loading');
         btn.textContent = 'Masuk ke Akun';
     }
 }
@@ -111,6 +113,7 @@ async function handleRegister(e) {
         const btn = DOM.$('#register-form button[type="submit"]');
         const originalText = btn.textContent;
         btn.disabled = true;
+        btn.classList.add('btn-loading');
         btn.textContent = 'Sedang membuat akun...';
 
         // Call API
@@ -135,6 +138,7 @@ async function handleRegister(e) {
         // Restore button
         const btn = DOM.$('#register-form button[type="submit"]');
         btn.disabled = false;
+        btn.classList.remove('btn-loading');
         btn.textContent = 'Buat Akun Baru';
     }
 }

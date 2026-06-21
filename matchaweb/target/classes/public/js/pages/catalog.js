@@ -32,6 +32,9 @@ async function loadTalents() {
         // Show skeleton loaders
         showSkeletonLoaders();
 
+        // Simulate small delay for loading state visibility
+        await new Promise(resolve => setTimeout(resolve, 300));
+
         // Call API
         const response = await APIService.getTalents();
         allTalents = response.data || [];
@@ -53,13 +56,19 @@ function showSkeletonLoaders() {
     container.innerHTML = '';
     
     for (let i = 0; i < 6; i++) {
-        const skeleton = DOM.createElement('div', 'skeleton');
+        const skeleton = DOM.createElement('div', 'skeleton-card');
         skeleton.innerHTML = `
-            <div class="skeleton-header"></div>
-            <div class="skeleton-content">
-                <div class="skeleton-line"></div>
-                <div class="skeleton-line"></div>
-                <div class="skeleton-line" style="width: 70%;"></div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <div class="skeleton skeleton-avatar"></div>
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-text short"></div>
+            </div>
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-text" style="width: 80%;"></div>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <div class="skeleton" style="flex: 1; height: 36px; border-radius: var(--radius-md);"></div>
+                <div class="skeleton" style="flex: 2; height: 36px; border-radius: var(--radius-md);"></div>
             </div>
         `;
         container.appendChild(skeleton);
@@ -124,11 +133,11 @@ function createTalentCard(talent) {
                 ${talent.bio ? UIUtils.truncate(talent.bio, 80) : 'Profesional berpengalaman'}
             </p>
 
-            <div class="talent-footer">
-                <button class="btn btn-primary" onclick="viewTalentDetail('${talent.id}')">
+            <div class="talent-footer" style="display: flex; gap: var(--spacing-sm);">
+                <button class="btn btn-outline" style="flex: 1;" onclick="viewTalentDetail('${talent.id}')">
                     Lihat Detail
                 </button>
-                <button class="btn btn-secondary" onclick="openBookingModal('${talent.id}')">
+                <button class="btn btn-primary" style="flex: 2;" onclick="openBookingModal('${talent.id}')">
                     Pesan
                 </button>
             </div>
@@ -138,7 +147,7 @@ function createTalentCard(talent) {
     return card;
 }
 
-function viewTalentDetail(talentId) {
+async function viewTalentDetail(talentId) {
     const talent = allTalents.find(t => t.id === talentId);
     if (!talent) return;
 
@@ -161,7 +170,46 @@ function viewTalentDetail(talentId) {
             <h4 style="color: var(--text-primary); margin-bottom: 10px; font-size: 16px;">Biografi</h4>
             <p style="color: var(--text-secondary); line-height: 1.6;">${talent.bio || 'Talent ini belum menulis biografi, namun siap memberikan layanan profesional terbaik untuk Anda.'}</p>
         </div>
+    `;
 
+    try {
+        const response = await APIService.getTalentServices(talentId);
+        const services = response.data || [];
+        
+        let servicesHtml = `
+        <div style="background: var(--bg-input); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h4 style="color: var(--text-primary); margin-bottom: 15px; font-size: 16px;">Layanan yang Tersedia</h4>
+        `;
+        
+        if (services.length > 0) {
+            servicesHtml += '<div style="display: flex; flex-direction: column; gap: 10px;">';
+            services.forEach(service => {
+                const namaLayanan = service.namaLayanan || service.nama || 'Layanan Tanpa Nama';
+                const tarifDasar = service.tarifDasar || service.harga || 0;
+                servicesHtml += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px;">
+                        <span style="color: var(--text-primary); font-weight: 500;">${namaLayanan}</span>
+                        <span style="color: var(--primary); font-weight: bold;">${UIUtils.formatCurrency(tarifDasar)}</span>
+                    </div>
+                `;
+            });
+            servicesHtml += '</div>';
+        } else {
+            servicesHtml += `<p style="color: var(--text-secondary); font-style: italic;">Belum ada layanan yang ditambahkan.</p>`;
+        }
+        servicesHtml += `</div>`;
+        bodyHtml += servicesHtml;
+    } catch (e) {
+        console.error('Error fetching services:', e);
+        bodyHtml += `
+        <div style="background: var(--bg-input); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h4 style="color: var(--text-primary); margin-bottom: 10px; font-size: 16px;">Layanan yang Tersedia</h4>
+            <p style="color: var(--text-secondary);">Gagal memuat layanan.</p>
+        </div>
+        `;
+    }
+
+    bodyHtml += `
         <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 20px;">
             <div>
                 <span style="color: var(--text-secondary); font-size: 14px;">Tarif Layanan Dasar</span>
@@ -280,6 +328,13 @@ async function submitBooking(talentId) {
     try {
         const user = AuthManager.getUser();
         
+        // Add loading state to button
+        const btn = document.querySelector('#booking-modal .btn-primary.btn-block');
+        if (btn) btn.classList.add('btn-loading');
+
+        // Simulate network delay for loading effect
+        await new Promise(r => setTimeout(r, 600));
+        
         // Calculate waktuSelesai manually to avoid timezone shift
         let startTimeStr = `${bookingDate}T${bookingTime}`;
         if (bookingTime.split(':').length === 2) {
@@ -289,6 +344,7 @@ async function submitBooking(talentId) {
         const startDateTime = new Date(startTimeStr);
         if (isNaN(startDateTime.getTime())) {
             UIUtils.showAlert('Format tanggal atau waktu tidak valid!', 'error');
+            if (btn) btn.classList.remove('btn-loading');
             return;
         }
 
@@ -323,6 +379,8 @@ async function submitBooking(talentId) {
         }, 1500);
     } catch (error) {
         UIUtils.showAlert('Gagal membuat booking: ' + error.message, 'error');
+        const btn = document.querySelector('#booking-modal .btn-primary.btn-block');
+        if (btn) btn.classList.remove('btn-loading');
     }
 }
 
@@ -334,6 +392,9 @@ async function performSearch() {
 
     try {
         showSkeletonLoaders();
+        // Simulate small delay for loading state visibility
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
         const response = await APIService.getTalents(keyword);
         allTalents = response.data || [];
         renderTalents(allTalents);

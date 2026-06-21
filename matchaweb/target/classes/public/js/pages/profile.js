@@ -27,6 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 async function loadUserProfile() {
     try {
+        // Simulate small delay for loading state visibility
+        await new Promise(resolve => setTimeout(resolve, 300));
+
         const response = await APIService.getUserProfile(currentUser.id);
         const userData = response.data;
 
@@ -35,8 +38,10 @@ async function loadUserProfile() {
         
         if (userData.profilePhoto) {
             DOM.$('#profile-initial').style.display = 'none';
-            DOM.$('#profile-image').src = userData.profilePhoto;
-            DOM.$('#profile-image').style.display = 'block';
+            const img = DOM.$('#profile-image');
+            img.onload = () => img.classList.add('loaded');
+            img.src = userData.profilePhoto;
+            img.style.display = 'block';
         } else {
             DOM.$('#profile-initial').textContent = avatar;
             DOM.$('#profile-initial').style.display = 'block';
@@ -109,8 +114,10 @@ async function savePersonalInfo(e) {
 
     try {
         const btn = e.target.querySelector('button[type="submit"]');
-        btn.disabled = true;
-        btn.textContent = 'Menyimpan...';
+        btn.classList.add('btn-loading');
+
+        // Simulate delay
+        await new Promise(r => setTimeout(r, 600));
 
         const response = await APIService.updateUserProfile(currentUser.id, {
             nama,
@@ -126,14 +133,12 @@ async function savePersonalInfo(e) {
 
         UIUtils.showAlert('Profil berhasil diperbarui!', 'success');
 
-        btn.disabled = false;
-        btn.textContent = 'Simpan Perubahan';
+        btn.classList.remove('btn-loading');
     } catch (error) {
         UIUtils.showAlert('Gagal menyimpan profil: ' + error.message, 'error');
         
         const btn = e.target.querySelector('button[type="submit"]');
-        btn.disabled = false;
-        btn.textContent = 'Simpan Perubahan';
+        btn.classList.remove('btn-loading');
     }
 }
 
@@ -269,14 +274,21 @@ async function saveAddress(e) {
     const zip = DOM.$('#address-zip').value;
 
     try {
+        const btn = e.target.querySelector('button[type="submit"]');
+        if (btn) btn.classList.add('btn-loading');
+        await new Promise(r => setTimeout(r, 600));
+
         // In a real app, call API to save address
         // await APIService.saveAddress({ label, address, city, province, zip });
 
         UIUtils.showAlert('Alamat berhasil ditambahkan!', 'success');
         closeAddressModal();
         await loadAddresses();
+        if (btn) btn.classList.remove('btn-loading');
     } catch (error) {
         UIUtils.showAlert('Gagal menyimpan alamat: ' + error.message, 'error');
+        const btn = e.target.querySelector('button[type="submit"]');
+        if (btn) btn.classList.remove('btn-loading');
     }
 }
 
@@ -339,8 +351,8 @@ async function changePassword(e) {
 
     try {
         const btn = e.target.querySelector('button[type="submit"]');
-        btn.disabled = true;
-        btn.textContent = 'Mengubah...';
+        btn.classList.add('btn-loading');
+        await new Promise(r => setTimeout(r, 600));
 
         // In a real app, call API to change password
         // await APIService.changePassword(oldPassword, newPassword);
@@ -348,14 +360,12 @@ async function changePassword(e) {
         UIUtils.showAlert('Password berhasil diubah!', 'success');
         e.target.reset();
 
-        btn.disabled = false;
-        btn.textContent = 'Ubah Password';
+        btn.classList.remove('btn-loading');
     } catch (error) {
         UIUtils.showAlert('Gagal mengubah password: ' + error.message, 'error');
         
         const btn = e.target.querySelector('button[type="submit"]');
-        btn.disabled = false;
-        btn.textContent = 'Ubah Password';
+        btn.classList.remove('btn-loading');
     }
 }
 
@@ -412,6 +422,10 @@ async function saveService(e) {
     }
 
     try {
+        const btn = e.target.querySelector('button[type="submit"]');
+        if (btn) btn.classList.add('btn-loading');
+        await new Promise(r => setTimeout(r, 600));
+
         if (editingServiceId) {
             // Mock edit di local memory
             const idx = userServices.findIndex(s => s.id == editingServiceId);
@@ -438,8 +452,11 @@ async function saveService(e) {
 
         closeServiceModal();
         renderServices();
+        if (btn) btn.classList.remove('btn-loading');
     } catch (error) {
         UIUtils.showAlert('Gagal menyimpan layanan: ' + error.message, 'error');
+        const btn = e.target.querySelector('button[type="submit"]');
+        if (btn) btn.classList.remove('btn-loading');
     }
 }
 
