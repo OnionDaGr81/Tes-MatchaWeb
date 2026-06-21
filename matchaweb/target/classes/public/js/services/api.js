@@ -100,9 +100,7 @@ class APIService {
     }
 
     static cancelBooking(bookingId) {
-        return this.request(`/bookings/${bookingId}/cancel`, {
-            method: 'PUT'
-        });
+        return this.updateBookingStatus(bookingId, "CANCELLED");
     }
 
     static updateBookingStatus(bookingId, status) {
@@ -155,7 +153,7 @@ class APIService {
     }
 
     static getTalentReviews(talentId) {
-        return this.request(`/reviews?talentId=${talentId}`);
+        return this.request(`/talents/${talentId}/reviews`);
     }
 
     // ===== USER ENDPOINTS =====
@@ -177,7 +175,7 @@ class APIService {
 
     // ===== NOTIFICATION ENDPOINTS =====
     static getNotifications(userId) {
-        return this.request(`/notifications?userId=${userId}`);
+        return this.request(`/users/${userId}/notifications`);
     }
 
     static markNotificationAsRead(notificationId) {

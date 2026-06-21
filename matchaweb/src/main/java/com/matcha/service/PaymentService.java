@@ -57,4 +57,8 @@ public class PaymentService {
         
         return payment;
     }
+
+    public Payment getPaymentByBookingId(String bookingId) {
+        return paymentRepository.getPaymentByBookingId(bookingId);
+    }
 }

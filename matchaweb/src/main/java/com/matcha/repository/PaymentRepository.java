@@ -62,4 +62,26 @@ public class PaymentRepository {
         }
         return null;
     }
+
+    // 4. Ambil Payment berdasarkan Booking ID
+    public Payment getPaymentByBookingId(String bookingId) {
+        String sql = "SELECT p.* FROM payments p JOIN invoices i ON p.invoice_id = i.id WHERE i.booking_id = ?";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, bookingId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Payment payment = new Payment();
+                    payment.setId(rs.getString("id"));
+                    payment.setInvoiceId(rs.getString("invoice_id"));
+                    payment.setPaymentMethod(rs.getString("payment_method"));
+                    payment.setPaymentStatus(rs.getString("payment_status"));
+                    return payment;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

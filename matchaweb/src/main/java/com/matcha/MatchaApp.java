@@ -12,9 +12,14 @@ import io.javalin.Javalin;
 import static io.javalin.apibuilder.ApiBuilder.*;
 import java.io.InputStream;
 import java.util.Map;
+import com.matcha.util.DBUtil;
+import java.sql.Connection;
+import java.sql.Statement;
 
 public class MatchaApp {
     public static void main(String[] args) {
+        migrateDatabase();
+
         AuthController authController          = new AuthController();
         UserController userController          = new UserController();
         CatalogController catalogController    = new CatalogController();
@@ -24,6 +29,7 @@ public class MatchaApp {
         NotificationController notifController = new NotificationController();
 
         Javalin app = Javalin.create(config -> {
+            config.http.maxRequestSize = 10_000_000L; // Naikkan limit ke 10MB untuk upload gambar Base64
             config.router.apiBuilder(() -> {
                 path("api", () -> {
 
@@ -45,6 +51,7 @@ public class MatchaApp {
                     // --- Catalog ---
                     path("talents", () -> {
                         get(ctx -> catalogController.getAllTalents(ctx));
+                        get("{talentId}", ctx -> catalogController.getTalentById(ctx));
                         get("{talentId}/services", ctx -> catalogController.getTalentServices(ctx));
                         get("{talentId}/reviews",  ctx -> reviewController.getTalentReviews(ctx));
                     });
@@ -64,6 +71,7 @@ public class MatchaApp {
 
                     // --- Payments ---
                     path("payments", () -> {
+                        get(ctx -> paymentController.getPaymentByBookingId(ctx));
                         post("invoice", ctx -> paymentController.createInvoice(ctx));
                         post("pay",     ctx -> paymentController.payInvoice(ctx));
                     });
@@ -76,6 +84,7 @@ public class MatchaApp {
                     // --- Notifications ---
                     path("notifications", () -> {
                         post(ctx -> notifController.createNotification(ctx));
+                        put("{notificationId}/read", ctx -> notifController.markAsRead(ctx));
                     });
                 });
             });
@@ -145,5 +154,22 @@ public class MatchaApp {
 
         app.start(7070);
         System.out.println("✅ Server Matcha berjalan di http://localhost:7070");
+    }
+
+    private static void migrateDatabase() {
+        try (Connection conn = DBUtil.getConnection();
+             Statement stmt = conn.createStatement()) {
+            try {
+                stmt.executeUpdate("ALTER TABLE users ADD COLUMN profile_photo LONGTEXT DEFAULT NULL");
+                System.out.println("✅ Migrasi DB sukses: kolom profile_photo ditambahkan.");
+            } catch (Exception e) {}
+            
+            try {
+                stmt.executeUpdate("ALTER TABLE notifications ADD COLUMN is_read BOOLEAN DEFAULT FALSE");
+                System.out.println("✅ Migrasi DB sukses: kolom is_read ditambahkan ke notifications.");
+            } catch (Exception e) {}
+        } catch (Exception e) {
+            // Abaikan error koneksi saat migrasi
+        }
     }
 }

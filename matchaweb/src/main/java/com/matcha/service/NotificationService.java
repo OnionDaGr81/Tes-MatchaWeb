@@ -35,4 +35,13 @@ public class NotificationService {
     public List<Notification> getUserNotifications(String userId) {
         return notificationRepository.getNotificationsByUserId(userId);
     }
+
+    // --- Logika 3: Tandai Dibaca ---
+    public boolean markAsRead(String notificationId) throws Exception {
+        boolean success = notificationRepository.markAsRead(notificationId);
+        if (!success) {
+            throw new Exception("Gagal mengupdate status notifikasi atau ID tidak ditemukan.");
+        }
+        return true;
+    }
 }

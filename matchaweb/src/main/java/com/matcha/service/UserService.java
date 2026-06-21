@@ -32,6 +32,14 @@ public class UserService {
         if (existing == null) {
             throw new Exception("User dengan ID '" + userId + "' tidak ditemukan.");
         }
+
+        // Merge (Partial Update) agar field yang tidak dikirim tidak menjadi null
+        if (updatedUser.getNama() == null) updatedUser.setNama(existing.getNama());
+        if (updatedUser.getEmail() == null) updatedUser.setEmail(existing.getEmail());
+        if (updatedUser.getNoTelp() == null) updatedUser.setNoTelp(existing.getNoTelp());
+        if (updatedUser.getProfilePhoto() == null) updatedUser.setProfilePhoto(existing.getProfilePhoto());
+        if (updatedUser.getBio() == null) updatedUser.setBio(existing.getBio());
+
         boolean success = userRepository.updateUser(userId, updatedUser);
         if (!success) {
             throw new Exception("Gagal mengupdate data user.");

@@ -75,4 +75,23 @@ public class PaymentController {
             ));
         }
     }
+
+    // GET /api/payments?bookingId={bookingId}
+    public void getPaymentByBookingId(Context ctx) {
+        try {
+            String bookingId = ctx.queryParam("bookingId");
+            if (bookingId == null || bookingId.isBlank()) {
+                ctx.status(400).json(Map.of("status", "error", "message", "bookingId wajib diisi.")); return;
+            }
+
+            Payment payment = paymentService.getPaymentByBookingId(bookingId);
+            if (payment != null) {
+                ctx.status(200).json(Map.of("status", "success", "data", payment));
+            } else {
+                ctx.status(404).json(Map.of("status", "error", "message", "Pembayaran tidak ditemukan."));
+            }
+        } catch (Exception e) {
+            ctx.status(500).json(Map.of("status", "error", "message", "Gagal mengambil data pembayaran."));
+        }
+    }
 }

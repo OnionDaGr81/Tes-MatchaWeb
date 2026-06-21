@@ -8,7 +8,7 @@
     <style>
         .review-form-container {
             max-width: 700px;
-            margin: 40px auto;
+            margin: var(--spacing-2xl) auto;
             padding: var(--spacing-lg);
         }
 
@@ -16,7 +16,7 @@
             background: linear-gradient(135deg, var(--primary-dark), var(--primary));
             color: white;
             padding: var(--spacing-xl);
-            border-radius: 12px;
+            border-radius: var(--radius-xl);
             margin-bottom: var(--spacing-xl);
             text-align: center;
         }
@@ -79,7 +79,7 @@
         .review-form {
             background-color: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: var(--radius-xl);
             padding: var(--spacing-lg);
         }
 
@@ -101,7 +101,7 @@
             margin: var(--spacing-lg) 0;
             padding: var(--spacing-lg);
             background-color: var(--bg-input);
-            border-radius: 8px;
+            border-radius: var(--radius-lg);
         }
 
         .aspect-rating {
@@ -118,7 +118,7 @@
 
         .aspect-rating .stars {
             display: flex;
-            gap: 4px;
+            gap: var(--spacing-xs);
         }
 
         .aspect-rating .star-small {
@@ -141,14 +141,14 @@
 
         .reviews-list {
             max-width: 700px;
-            margin: 40px auto;
+            margin: var(--spacing-2xl) auto;
             padding: var(--spacing-lg);
         }
 
         .review-item {
             background-color: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: var(--radius-xl);
             padding: var(--spacing-lg);
             margin-bottom: var(--spacing-lg);
         }
@@ -193,7 +193,7 @@
             border: 1px solid var(--border);
             color: var(--text-secondary);
             padding: 6px 12px;
-            border-radius: 6px;
+            border-radius: var(--radius-md);
             cursor: pointer;
             transition: all var(--transition-normal);
         }
@@ -249,7 +249,7 @@
     <!-- Review Form Page -->
     <div id="review-form-page" class="review-form-container">
         <div class="review-header">
-            <h1>✨ Berikan Rating & Review</h1>
+            <h1>Berikan Rating & Review</h1>
             <p>Ceritakan pengalaman Anda untuk membantu talent lain</p>
         </div>
 

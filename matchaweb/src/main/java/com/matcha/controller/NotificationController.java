@@ -61,4 +61,15 @@ public class NotificationController {
             ));
         }
     }
+
+    // PUT /api/notifications/{notificationId}/read
+    public void markAsRead(Context ctx) {
+        try {
+            String notificationId = ctx.pathParam("notificationId");
+            notificationService.markAsRead(notificationId);
+            ctx.status(200).json(Map.of("status", "success", "message", "Notifikasi ditandai dibaca"));
+        } catch (Exception e) {
+            ctx.status(500).json(Map.of("status", "error", "message", "Gagal mengupdate."));
+        }
+    }
 }

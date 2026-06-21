@@ -7,6 +7,7 @@ public class Notification {
     private String recipientId;
     private String message;
     private LocalDateTime timestamp;
+    private boolean isRead;
 
     public Notification() {}
 
@@ -22,4 +23,7 @@ public class Notification {
 
     public LocalDateTime getTimestamp() { return timestamp; }
     public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
+
+    public boolean isRead() { return isRead; }
+    public void setRead(boolean isRead) { this.isRead = isRead; }
 }

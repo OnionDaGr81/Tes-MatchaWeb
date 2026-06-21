@@ -133,6 +133,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` varchar(255) NOT NULL,
   `no_telp` varchar(20) DEFAULT NULL,
   `role` varchar(20) NOT NULL,
+  `profile_photo` LONGTEXT DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;

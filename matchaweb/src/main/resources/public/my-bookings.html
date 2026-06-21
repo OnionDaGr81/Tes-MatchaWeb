@@ -8,7 +8,7 @@
     <style>
         .bookings-container {
             max-width: 1000px;
-            margin: 40px auto;
+            margin: var(--spacing-2xl) auto;
             padding: var(--spacing-lg);
         }
 
@@ -20,10 +20,10 @@
         }
 
         .filter-chip {
-            padding: 8px 16px;
+            padding: var(--spacing-sm) 16px;
             background-color: var(--border);
             border: 1px solid transparent;
-            border-radius: 20px;
+            border-radius: var(--radius-2xl);
             color: var(--text-secondary);
             cursor: pointer;
             transition: all var(--transition-normal);
@@ -48,7 +48,7 @@
         .booking-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: var(--radius-xl);
             overflow: hidden;
             transition: all var(--transition-normal);
         }
@@ -74,8 +74,8 @@
         }
 
         .booking-status {
-            padding: 4px 12px;
-            border-radius: 20px;
+            padding: var(--spacing-xs) 12px;
+            border-radius: var(--radius-2xl);
             font-size: var(--font-size-xs);
             font-weight: bold;
         }
@@ -154,7 +154,7 @@
             margin: var(--spacing-lg) 0;
             padding: var(--spacing-lg);
             background-color: var(--bg-input);
-            border-radius: 8px;
+            border-radius: var(--radius-lg);
         }
 
         .timeline-step {
@@ -222,7 +222,7 @@
             </div>
             <div class="sidebar-nav">
                 <div class="sidebar-link" onclick="window.history.back()">Kembali</div>
-                <div class="sidebar-link" onclick="window.location.href='/catalog.html'">🔍 Katalog Talent</div>
+                <div class="sidebar-link" onclick="window.location.href='/catalog.html'">Katalog Talent</div>
                 <div class="sidebar-link active" onclick="window.location.href='/my-bookings.html'">Booking Saya</div>
                 <div class="sidebar-link" onclick="window.location.href='/notifications.html'">Notifikasi</div>
             </div>
@@ -256,7 +256,7 @@
 
         <!-- Bookings List -->
         <div id="bookings-container" class="bookings-grid">
-            <div class="spinner" style="margin: 40px auto;"></div>
+            <div class="spinner" style="margin: var(--spacing-2xl) auto;"></div>
         </div>
 
         <!-- Empty State -->
@@ -267,7 +267,7 @@
             <h3>Tidak Ada Pesanan</h3>
             <p>Anda belum memiliki pesanan dengan status ini</p>
             <button class="btn btn-primary" onclick="window.location.href='/catalog.html'" style="margin-top: var(--spacing-lg);">
-                🔍 Cari Talent Sekarang
+                Cari Talent Sekarang
             </button>
         </div>
         </div>

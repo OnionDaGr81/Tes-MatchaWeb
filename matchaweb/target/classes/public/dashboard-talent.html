@@ -16,7 +16,7 @@
         .stat-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: var(--radius-xl);
             padding: var(--spacing-lg);
             text-align: center;
         }
@@ -51,7 +51,7 @@
         .section-panel {
             background-color: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: var(--radius-xl);
             padding: var(--spacing-lg);
         }
 
@@ -73,7 +73,7 @@
             background-color: var(--bg-input);
             border-left: 3px solid var(--primary);
             padding: var(--spacing-md);
-            border-radius: 6px;
+            border-radius: var(--radius-md);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -99,7 +99,7 @@
 
         .earnings-chart {
             background-color: var(--bg-input);
-            border-radius: 8px;
+            border-radius: var(--radius-lg);
             padding: var(--spacing-lg);
             margin-top: var(--spacing-md);
             min-height: 200px;
@@ -111,7 +111,7 @@
         .bar {
             flex: 1;
             background-color: var(--primary);
-            border-radius: 4px 4px 0 0;
+            border-radius: var(--radius-sm) 4px 0 0;
             min-height: 40px;
             display: flex;
             flex-direction: column;
@@ -138,7 +138,7 @@
         .service-item {
             background-color: var(--bg-input);
             padding: var(--spacing-md);
-            border-radius: 6px;
+            border-radius: var(--radius-md);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -166,7 +166,7 @@
             color: var(--text-muted);
             font-style: italic;
             border: 1px dashed var(--border);
-            border-radius: 8px;
+            border-radius: var(--radius-lg);
         }
 
         @media (max-width: 768px) {
@@ -185,7 +185,7 @@
                 <div class="sidebar-logo" onclick="window.location.href='/'">🍵 Matcha<span>Companion</span></div>
             </div>
             <div class="sidebar-nav">
-                <div class="sidebar-link active" onclick="window.location.href='/dashboard-talent.html'">📊 Dashboard</div>
+                <div class="sidebar-link active" onclick="window.location.href='/dashboard-talent.html'">Dashboard</div>
                 <div class="sidebar-link" onclick="window.location.href='/my-bookings.html'">Pesanan Saya</div>
                 <div class="sidebar-link" onclick="window.location.href='/notifications.html'">Notifikasi</div>
                 <div class="sidebar-link" onclick="window.location.href='/profile.html'">Profil & Layanan</div>
@@ -243,7 +243,7 @@
 
                     <!-- Earnings Chart -->
                     <div class="section-panel">
-                        <h3>💰 Penghasilan Mingguan</h3>
+                        <h3>Penghasilan Mingguan</h3>
                         <div id="earnings-chart" class="earnings-chart">
                             <div class="empty-message">Memuat data...</div>
                         </div>

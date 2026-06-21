@@ -11,7 +11,7 @@
             background-color: var(--bg-card);
             border: 1px solid var(--border);
             padding: var(--spacing-lg);
-            border-radius: 12px;
+            border-radius: var(--radius-xl);
             margin-bottom: var(--spacing-xl);
             display: flex;
             gap: var(--spacing-md);
@@ -23,7 +23,7 @@
             background-color: var(--bg-input);
             border: 1px solid var(--border);
             padding: var(--spacing-md);
-            border-radius: 8px;
+            border-radius: var(--radius-lg);
             color: var(--text-primary);
         }
 
@@ -40,10 +40,10 @@
         }
 
         .filter-chip {
-            padding: 8px 16px;
+            padding: var(--spacing-sm) 16px;
             background-color: var(--border);
             border: 1px solid transparent;
-            border-radius: 20px;
+            border-radius: var(--radius-2xl);
             color: var(--text-secondary);
             cursor: pointer;
             transition: all var(--transition-normal);
@@ -68,7 +68,7 @@
         .talent-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: var(--radius-xl);
             overflow: hidden;
             transition: all var(--transition-normal);
             cursor: pointer;
@@ -177,7 +177,7 @@
         .skeleton {
             background-color: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: var(--radius-xl);
             overflow: hidden;
         }
 
@@ -198,7 +198,7 @@
             background-size: 200% 100%;
             animation: loading 1.5s infinite;
             margin-bottom: var(--spacing-md);
-            border-radius: 4px;
+            border-radius: var(--radius-sm);
         }
 
         .skeleton-line:last-child {
@@ -220,7 +220,7 @@
             </div>
             <div class="sidebar-nav">
                 <div class="sidebar-link" onclick="window.history.back()">Kembali</div>
-                <div class="sidebar-link active" onclick="window.location.href='/catalog.html'">🔍 Katalog Talent</div>
+                <div class="sidebar-link active" onclick="window.location.href='/catalog.html'">Katalog Talent</div>
                 <div class="sidebar-link" onclick="window.location.href='/my-bookings.html'">Booking Saya</div>
                 <div class="sidebar-link" onclick="window.location.href='/notifications.html'">Notifikasi</div>
             </div>
@@ -242,7 +242,7 @@
     <!-- Main Content -->
     <div class="container">
         <h1 style="color: var(--primary); margin-bottom: var(--spacing-md);">Jelajahi Talent Premium</h1>
-        <p style="color: var(--text-secondary); margin-bottom: var(--spacing-xl);">Temukan pendamping profesional yang sesuai dengan kebutuhan Anda</p>
+        <p style="color: var(--text-secondary); margin-bottom: var(--spacing-xl);">Temukan partner profesional untuk menemani aktivitasmu</p>
 
         <!-- Search Bar -->
         <div class="search-bar">
@@ -254,8 +254,8 @@
         <div class="filters" id="filters-container">
             <div class="filter-chip active" data-filter="all" onclick="filterTalents('all')">Semua</div>
             <div class="filter-chip" data-filter="rating" onclick="filterTalents('rating')">Rating Tinggi</div>
-            <div class="filter-chip" data-filter="price-low" onclick="filterTalents('price-low')">💰 Harga Rendah</div>
-            <div class="filter-chip" data-filter="price-high" onclick="filterTalents('price-high')">💎 Premium</div>
+            <div class="filter-chip" data-filter="price-low" onclick="filterTalents('price-low')">Harga Rendah</div>
+            <div class="filter-chip" data-filter="price-high" onclick="filterTalents('price-high')">Premium</div>
         </div>
 
         <!-- Talents Grid -->

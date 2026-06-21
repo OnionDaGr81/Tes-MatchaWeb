@@ -78,4 +78,24 @@ public class CatalogController {
             ));
         }
     }
+
+    // GET /api/talents/{talentId}
+    public void getTalentById(Context ctx) {
+        try {
+            String talentId = ctx.pathParam("talentId");
+            Map<String, Object> talent = catalogService.getTalentCatalog("").stream()
+                .filter(t -> talentId.equals(t.get("id"))).findFirst().orElse(null);
+            
+            if (talent != null) {
+                ctx.status(200).json(Map.of("status", "success", "data", talent));
+            } else {
+                ctx.status(404).json(Map.of("status", "error", "message", "Talent tidak ditemukan."));
+            }
+        } catch (Exception e) {
+            ctx.status(500).json(Map.of(
+                "status", "error",
+                "message", "Gagal mengambil detail talent."
+            ));
+        }
+    }
 }

@@ -8,7 +8,7 @@
     <style>
         .notifications-container {
             max-width: 800px;
-            margin: 40px auto;
+            margin: var(--spacing-2xl) auto;
             padding: var(--spacing-lg);
         }
 
@@ -26,10 +26,10 @@
         }
 
         .filter-btn {
-            padding: 8px 16px;
+            padding: var(--spacing-sm) 16px;
             background-color: var(--border);
             border: 1px solid transparent;
-            border-radius: 20px;
+            border-radius: var(--radius-2xl);
             color: var(--text-secondary);
             cursor: pointer;
             transition: all var(--transition-normal);
@@ -53,7 +53,7 @@
         .notification-item {
             background-color: var(--bg-card);
             border-left: 4px solid var(--primary);
-            border-radius: 8px;
+            border-radius: var(--radius-lg);
             padding: var(--spacing-lg);
             display: flex;
             justify-content: space-between;
@@ -215,7 +215,7 @@
         <!-- Notifications List -->
         <div id="notifications-container" class="notifications-list">
             <div class="empty-state">
-                <div class="spinner" style="margin: 20px auto;"></div>
+                <div class="spinner" style="margin: var(--spacing-lg) auto;"></div>
                 <p>Memuat notifikasi...</p>
             </div>
         </div>

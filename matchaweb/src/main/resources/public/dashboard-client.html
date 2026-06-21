@@ -6,27 +6,27 @@
     <title>Dashboard Klien - Matcha</title>
     <link rel="stylesheet" href="/css/global.css">
     <style>
-        .container-dash { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+        .container-dash { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 2fr; gap: var(--spacing-xl); }
         
-        .profile-panel { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 25px; height: fit-content; }
+        .profile-panel { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: var(--spacing-lg); height: fit-content; }
         .profile-panel h3 { color: var(--primary); margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         .profile-panel p { color: var(--text-secondary); font-size: 14px; margin-bottom: 8px; }
         .profile-panel strong { color: var(--text-primary); }
 
-        .history-panel { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 25px; }
+        .history-panel { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: var(--spacing-lg); }
         .history-panel h3 { color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         
-        .booking-card { background-color: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 15px; margin-bottom: 15px; transition: 0.2s; }
+        .booking-card { background-color: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 15px; margin-bottom: var(--spacing-md); transition: 0.2s; }
         .booking-card:hover { border-color: var(--border-accent); }
         .booking-card h4 { margin-bottom: 5px; color: var(--text-primary); font-size: 16px; font-weight: 500; }
         .booking-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 5px; }
         
-        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-top: 5px; text-transform: uppercase; }
+        .status-badge { display: inline-block; padding: var(--spacing-xs) 10px; border-radius: var(--radius-xl); font-size: 11px; font-weight: 600; margin-top: 5px; text-transform: uppercase; }
         .status-pending { background-color: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid var(--warning); }
         .status-confirmed { background-color: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid var(--success); }
         .status-cancelled { background-color: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
         
-        .empty-state { text-align: center; color: var(--text-muted); font-style: italic; padding: 20px; border: 1px dashed var(--border); border-radius: 8px; }
+        .empty-state { text-align: center; color: var(--text-muted); font-style: italic; padding: var(--spacing-lg); border: 1px dashed var(--border); border-radius: var(--radius-lg); }
     </style>
 </head>
 <body>
@@ -38,8 +38,8 @@
                 <div class="sidebar-logo" onclick="window.location.href='/'">🍵 Matcha<span>Companion</span></div>
             </div>
             <div class="sidebar-nav">
-                <div class="sidebar-link active" onclick="window.location.href='/dashboard-client.html'">📊 Dashboard</div>
-                <div class="sidebar-link" onclick="window.location.href='/catalog.html'">🔍 Katalog Talent</div>
+                <div class="sidebar-link active" onclick="window.location.href='/dashboard-client.html'">Dashboard</div>
+                <div class="sidebar-link" onclick="window.location.href='/catalog.html'">Katalog Talent</div>
                 <div class="sidebar-link" onclick="window.location.href='/my-bookings.html'">Booking Saya</div>
                 <div class="sidebar-link" onclick="window.location.href='/notifications.html'">Notifikasi</div>
                 <div class="sidebar-link" onclick="window.location.href='/profile.html'">Profil</div>

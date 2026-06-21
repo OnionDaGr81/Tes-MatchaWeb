@@ -10,7 +10,7 @@ public class UserRepository {
 
     // --- Menyimpan data User baru ke MariaDB ---
     public boolean saveUser(User user) {
-        String sql = "INSERT INTO users (id, nama, email, password, no_telp, role) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (id, nama, email, password, no_telp, role, profile_photo) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, user.getId());
@@ -19,6 +19,7 @@ public class UserRepository {
             stmt.setString(4, user.getPassword());
             stmt.setString(5, user.getNoTelp());
             stmt.setString(6, user.getRole());
+            stmt.setString(7, user.getProfilePhoto());
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -76,13 +77,14 @@ public class UserRepository {
 
     // --- Update data User berdasarkan ID ---
     public boolean updateUser(String userId, User updatedUser) {
-        String sql = "UPDATE users SET nama = ?, email = ?, no_telp = ? WHERE id = ?";
+        String sql = "UPDATE users SET nama = ?, email = ?, no_telp = ?, profile_photo = ? WHERE id = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, updatedUser.getNama());
             stmt.setString(2, updatedUser.getEmail());
             stmt.setString(3, updatedUser.getNoTelp());
-            stmt.setString(4, userId);
+            stmt.setString(4, updatedUser.getProfilePhoto());
+            stmt.setString(5, userId);
             boolean isUpdated = stmt.executeUpdate() > 0;
             
             // Simpan bio ke tabel profiles
@@ -125,6 +127,7 @@ public class UserRepository {
         user.setPassword(rs.getString("password"));
         user.setNoTelp(rs.getString("no_telp"));
         user.setRole(rs.getString("role"));
+        user.setProfilePhoto(rs.getString("profile_photo"));
         return user;
     }
 }

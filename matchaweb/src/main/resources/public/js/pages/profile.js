@@ -32,7 +32,17 @@ async function loadUserProfile() {
 
         // Update profile header
         const avatar = userData.nama ? userData.nama.charAt(0).toUpperCase() : '👤';
-        DOM.$('#profile-avatar').textContent = avatar;
+        
+        if (userData.profilePhoto) {
+            DOM.$('#profile-initial').style.display = 'none';
+            DOM.$('#profile-image').src = userData.profilePhoto;
+            DOM.$('#profile-image').style.display = 'block';
+        } else {
+            DOM.$('#profile-initial').textContent = avatar;
+            DOM.$('#profile-initial').style.display = 'block';
+            DOM.$('#profile-image').style.display = 'none';
+        }
+        
         DOM.$('#profile-name').textContent = userData.nama || 'User';
         DOM.$('#profile-role').textContent = `${userData.role === 'talent' ? '🎯 Talent' : '👤 Client'}`;
         DOM.$('#profile-email').textContent = userData.email || '-';
@@ -476,5 +486,55 @@ function logout() {
     if (confirm('Yakin ingin keluar?')) {
         AuthManager.logout();
         window.location.href = '/login.html';
+    }
+}
+
+/**
+ * Handle photo upload
+ */
+async function handlePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        UIUtils.showAlert('Silakan pilih file gambar (JPG, PNG, dll)', 'error');
+        return;
+    }
+
+    // Validate file size (e.g., max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+        UIUtils.showAlert('Ukuran gambar maksimal 2MB', 'error');
+        return;
+    }
+
+    try {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const base64Image = e.target.result;
+            
+            // Update localStorage
+            const updatedUser = { ...currentUser, profilePhoto: base64Image };
+            AuthManager.setUser(updatedUser);
+            currentUser = updatedUser;
+            
+            // Also try to send to API
+            try {
+                await APIService.updateUserProfile(currentUser.id, updatedUser);
+                
+                // Update UI hanya jika API sukses
+                DOM.$('#profile-initial').style.display = 'none';
+                DOM.$('#profile-image').src = base64Image;
+                DOM.$('#profile-image').style.display = 'block';
+
+                UIUtils.showAlert('Foto profil berhasil diperbarui!', 'success');
+            } catch (apiErr) {
+                console.error('Gagal upload ke server:', apiErr);
+                UIUtils.showAlert('Gagal menyimpan foto (Mungkin ukuran terlalu besar)', 'error');
+            }
+        };
+        reader.readAsDataURL(file);
+    } catch (error) {
+        UIUtils.showAlert('Gagal mengupload foto', 'error');
     }
 }

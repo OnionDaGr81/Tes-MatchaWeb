@@ -8,7 +8,7 @@
     <style>
         .payment-container {
             max-width: 900px;
-            margin: 40px auto;
+            margin: var(--spacing-2xl) auto;
             padding: var(--spacing-lg);
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -18,7 +18,7 @@
         .order-summary {
             background-color: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: var(--radius-xl);
             padding: var(--spacing-lg);
             height: fit-content;
         }
@@ -65,7 +65,7 @@
         .payment-form {
             background-color: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: var(--radius-xl);
             padding: var(--spacing-lg);
         }
 
@@ -86,7 +86,7 @@
             flex: 1;
             padding: var(--spacing-md);
             border: 2px solid var(--border);
-            border-radius: 8px;
+            border-radius: var(--radius-lg);
             text-align: center;
             cursor: pointer;
             transition: all var(--transition-normal);
@@ -127,7 +127,7 @@
         .security-info {
             background-color: rgba(143, 188, 143, 0.1);
             border: 1px solid var(--primary);
-            border-radius: 8px;
+            border-radius: var(--radius-lg);
             padding: var(--spacing-md);
             margin-bottom: var(--spacing-lg);
             font-size: var(--font-size-sm);
@@ -190,7 +190,7 @@
             
             <div id="booking-details">
                 <!-- Data booking akan diisi dari API -->
-                <div class="spinner" style="margin: 20px auto;"></div>
+                <div class="spinner" style="margin: var(--spacing-lg) auto;"></div>
             </div>
 
             <div class="security-info">
@@ -262,7 +262,7 @@
                     <p style="margin-top: 10px;">Silakan transfer ke rekening berikut dan konfirmasi bukti transfer</p>
                 </div>
 
-                <div class="order-item" style="background-color: var(--bg-input); padding: 15px; border-radius: 8px;">
+                <div class="order-item" style="background-color: var(--bg-input); padding: 15px; border-radius: var(--radius-lg);">
                     <div>
                         <div class="order-label">Bank</div>
                         <div class="order-value">BCA</div>
@@ -273,7 +273,7 @@
                     </div>
                 </div>
 
-                <div class="order-item" style="background-color: var(--bg-input); padding: 15px; border-radius: 8px; margin-top: 10px;">
+                <div class="order-item" style="background-color: var(--bg-input); padding: 15px; border-radius: var(--radius-lg); margin-top: 10px;">
                     <div>
                         <div class="order-label">Atas Nama</div>
                         <div class="order-value">PT Matcha Indonesia</div>
