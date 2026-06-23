@@ -163,8 +163,17 @@ function renderUpcomingBookings(bookings) {
     const container = DOM.$('#upcoming-bookings');
 
     const upcoming = bookings
-        .filter(b => new Date(b.bookingDate) > new Date())
-        .sort((a, b) => new Date(a.bookingDate) - new Date(b.bookingDate))
+        .filter(b => b.status === 'PENDING' || b.status === 'PAID' || new Date(b.bookingDate) > new Date())
+        .sort((a, b) => {
+            const timeA = a.createdAt ? new Date(a.createdAt.replace(' ', 'T')).getTime() : 0;
+            const timeB = b.createdAt ? new Date(b.createdAt.replace(' ', 'T')).getTime() : 0;
+            if (timeB === timeA) {
+                const arrA = a.bookingDate ? new Date(a.bookingDate.replace(' ', 'T')).getTime() : 0;
+                const arrB = b.bookingDate ? new Date(b.bookingDate.replace(' ', 'T')).getTime() : 0;
+                return arrB - arrA;
+            }
+            return timeB - timeA;
+        })
         .slice(0, 5);
 
     if (upcoming.length === 0) {
@@ -322,7 +331,8 @@ function renderReviews(reviews) {
  * Approve booking
  */
 async function approveBooking(bookingId, btn) {
-    if (!confirm('Setujui pesanan ini?')) return;
+    const isConfirmed = await UIUtils.showConfirm('Konfirmasi', 'Setujui pesanan ini?');
+    if (!isConfirmed) return;
 
     if (btn) btn.classList.add('btn-loading');
     try {
@@ -341,7 +351,7 @@ async function approveBooking(bookingId, btn) {
  * Reject booking
  */
 async function rejectBooking(bookingId, btn) {
-    const reason = prompt('Alasan penolakan:');
+    const reason = await UIUtils.showPrompt('Tolak Pesanan', 'Masukkan alasan penolakan:', 'Alasan...');
     if (!reason) return;
 
     if (btn) btn.classList.add('btn-loading');
@@ -360,8 +370,9 @@ async function rejectBooking(bookingId, btn) {
 /**
  * Logout
  */
-function logout() {
-    if (confirm('Yakin ingin keluar?')) {
+async function logout() {
+    const isConfirmed = await UIUtils.showConfirm('Keluar', 'Yakin ingin keluar?');
+    if (isConfirmed) {
         AuthManager.logout();
         window.location.href = '/login.html';
     }

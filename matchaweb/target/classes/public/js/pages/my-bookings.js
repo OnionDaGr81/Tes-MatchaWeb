@@ -134,9 +134,20 @@ function renderBookings(bookings) {
     const container = DOM.$('#bookings-container');
     const emptyState = DOM.$('#empty-state');
 
-    const filtered = currentFilter === 'all' 
+    let filtered = currentFilter === 'all' 
         ? bookings 
         : bookings.filter(b => (b.status || '').toLowerCase() === currentFilter.toLowerCase());
+
+    filtered.sort((a, b) => {
+        const timeA = a.createdAt ? new Date(a.createdAt.replace(' ', 'T')).getTime() : 0;
+        const timeB = b.createdAt ? new Date(b.createdAt.replace(' ', 'T')).getTime() : 0;
+        if (timeB === timeA) {
+            const arrA = a.waktuMulai ? new Date(a.waktuMulai.replace(' ', 'T')).getTime() : 0;
+            const arrB = b.waktuMulai ? new Date(b.waktuMulai.replace(' ', 'T')).getTime() : 0;
+            return arrB - arrA;
+        }
+        return timeB - timeA;
+    });
 
     if (filtered.length === 0) {
         container.innerHTML = '';
@@ -355,7 +366,8 @@ function closeBookingDetailModal() {
  * Approve booking
  */
 async function approveBooking(bookingId, btn) {
-    if (!confirm('Setujui pesanan ini?')) return;
+    const isConfirmed = await UIUtils.showConfirm('Konfirmasi', 'Setujui pesanan ini?');
+    if (!isConfirmed) return;
 
     if (btn) btn.classList.add('btn-loading');
     try {
@@ -374,7 +386,7 @@ async function approveBooking(bookingId, btn) {
  * Reject booking
  */
 async function rejectBooking(bookingId, btn) {
-    const reason = prompt('Alasan penolakan:');
+    const reason = await UIUtils.showPrompt('Tolak Pesanan', 'Masukkan alasan penolakan:', 'Alasan...');
     if (!reason) return;
 
     if (btn) btn.classList.add('btn-loading');
@@ -394,9 +406,10 @@ async function rejectBooking(bookingId, btn) {
  * Cancel booking
  */
 async function cancelBooking(bookingId, btn) {
-    if (!confirm('Yakin ingin membatalkan pesanan ini?')) return;
+    const isConfirmed = await UIUtils.showConfirm('Batalkan Pesanan', 'Yakin ingin membatalkan pesanan ini?');
+    if (!isConfirmed) return;
 
-    const reason = prompt('Alasan pembatalan (opsional):');
+    const reason = await UIUtils.showPrompt('Batalkan Pesanan', 'Alasan pembatalan (opsional):', 'Alasan...');
 
     if (btn) btn.classList.add('btn-loading');
     try {
@@ -413,8 +426,9 @@ async function cancelBooking(bookingId, btn) {
 /**
  * Logout
  */
-function logout() {
-    if (confirm('Yakin ingin keluar?')) {
+async function logout() {
+    const isConfirmed = await UIUtils.showConfirm('Keluar', 'Yakin ingin keluar?');
+    if (isConfirmed) {
         AuthManager.logout();
         window.location.href = '/login.html';
     }

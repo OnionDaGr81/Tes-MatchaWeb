@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS `bookings` (
   `waktu_mulai` datetime NOT NULL,
   `waktu_selesai` datetime NOT NULL,
   `status` varchar(20) NOT NULL,
+  `created_at` timestamp DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `fk_bookings_client` (`client_id`),
   KEY `fk_bookings_talent` (`talent_id`),

@@ -58,6 +58,17 @@
                             return;
                         }
 
+                        bookings.sort((a, b) => {
+                            const timeA = a.createdAt ? new Date(a.createdAt.replace(' ', 'T')).getTime() : 0;
+                            const timeB = b.createdAt ? new Date(b.createdAt.replace(' ', 'T')).getTime() : 0;
+                            if (timeB === timeA) {
+                                const arrA = a.waktuMulai ? new Date(a.waktuMulai.replace(' ', 'T')).getTime() : 0;
+                                const arrB = b.waktuMulai ? new Date(b.waktuMulai.replace(' ', 'T')).getTime() : 0;
+                                return arrB - arrA;
+                            }
+                            return timeB - timeA;
+                        });
+
                         bookings.forEach(b => {
                             let statusClass = 'status-pending';
                             let statusText = 'Menunggu Konfirmasi';

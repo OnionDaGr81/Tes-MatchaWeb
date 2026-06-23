@@ -170,6 +170,88 @@ class UIUtils {
         };
         return statusMap[status?.toLowerCase()] || '#a0a0a0';
     }
+
+    /**
+     * Tampilkan custom confirm modal
+     */
+    static showConfirm(title, message) {
+        return new Promise((resolve) => {
+            const modalId = 'confirm-modal-' + Date.now();
+            const modal = document.createElement('div');
+            modal.id = modalId;
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 400px;">
+                    <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
+                        <h2>${title}</h2>
+                    </div>
+                    <div style="padding: 20px;">
+                        <p>${message}</p>
+                        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                            <button id="btn-cancel-${modalId}" class="btn btn-outline">Batal</button>
+                            <button id="btn-confirm-${modalId}" class="btn btn-primary">Ya</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            const close = (result) => {
+                modal.classList.remove('active');
+                setTimeout(() => document.body.removeChild(modal), 300);
+                resolve(result);
+            };
+
+            document.getElementById(`btn-cancel-${modalId}`).onclick = () => close(false);
+            document.getElementById(`btn-confirm-${modalId}`).onclick = () => close(true);
+        });
+    }
+
+    /**
+     * Tampilkan custom prompt modal
+     */
+    static showPrompt(title, message, placeholder = '') {
+        return new Promise((resolve) => {
+            const modalId = 'prompt-modal-' + Date.now();
+            const modal = document.createElement('div');
+            modal.id = modalId;
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 400px;">
+                    <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
+                        <h2>${title}</h2>
+                    </div>
+                    <div style="padding: 20px;">
+                        <p>${message}</p>
+                        <input type="text" id="input-${modalId}" class="form-control" placeholder="${placeholder}" style="width: 100%; box-sizing: border-box; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                            <button id="btn-cancel-${modalId}" class="btn btn-outline">Batal</button>
+                            <button id="btn-confirm-${modalId}" class="btn btn-primary">Konfirmasi</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            const input = document.getElementById(`input-${modalId}`);
+            input.focus();
+
+            const close = (result) => {
+                modal.classList.remove('active');
+                setTimeout(() => document.body.removeChild(modal), 300);
+                resolve(result);
+            };
+
+            document.getElementById(`btn-cancel-${modalId}`).onclick = () => close(null);
+            document.getElementById(`btn-confirm-${modalId}`).onclick = () => close(input.value);
+            
+            input.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    close(input.value);
+                }
+            });
+        });
+    }
 }
 
 /**

@@ -1,3 +1,4 @@
+D:\Tes-MatchaWeb\matchaweb\src\main\java\AlterDb.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\controller\AuthController.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\controller\BookingController.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\controller\CatalogController.java
@@ -8,14 +9,11 @@ D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\controller\UserController.ja
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\MatchaApp.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\model\Booking.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\model\Client.java
-D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\model\DiscountRule.java
-D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\model\INotifiable.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\model\Invoice.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\model\IPayable.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\model\Notification.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\model\Payment.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\model\Profile.java
-D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\model\ProviderDiscountRegistry.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\model\Rating.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\model\Review.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\model\Schedule.java
@@ -36,5 +34,4 @@ D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\service\NotificationService.
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\service\PaymentService.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\service\ReviewService.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\service\UserService.java
-D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\temp\AlterDB.java
 D:\Tes-MatchaWeb\matchaweb\src\main\java\com\matcha\util\DBUtil.java

@@ -18,6 +18,8 @@ public class Booking {
     private LocalDateTime waktuSelesai;
     
     private String status; // Misal: "PENDING", "CONFIRMED", "CANCELLED", "COMPLETED"
+    
+    private String createdAt;
 
     public Booking() {}
 
@@ -64,4 +66,7 @@ public class Booking {
     
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    
+    public String getCreatedAt() { return createdAt; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 }

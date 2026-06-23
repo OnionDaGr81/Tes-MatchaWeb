@@ -62,6 +62,10 @@ public class BookingRepository {
                 b.setWaktuMulai(rs.getTimestamp("waktu_mulai").toLocalDateTime());
                 b.setWaktuSelesai(rs.getTimestamp("waktu_selesai").toLocalDateTime());
                 b.setStatus(rs.getString("status"));
+                try {
+                    Timestamp createdAt = rs.getTimestamp("created_at");
+                    if (createdAt != null) b.setCreatedAt(createdAt.toString());
+                } catch (SQLException ignore) {}
                 list.add(b);
             }
         } catch (SQLException e) {
@@ -76,7 +80,7 @@ public class BookingRepository {
         
         // Cek apakah yang meminta data adalah client atau talent
         String columnFilter = role.equalsIgnoreCase("talent") ? "talent_id" : "client_id";
-        String sql = "SELECT * FROM bookings WHERE " + columnFilter + " = ? ORDER BY waktu_mulai DESC";
+        String sql = "SELECT * FROM bookings WHERE " + columnFilter + " = ? ORDER BY created_at DESC";
         
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -100,6 +104,10 @@ public class BookingRepository {
                 }
                 
                 b.setStatus(rs.getString("status"));
+                try {
+                    Timestamp createdAt = rs.getTimestamp("created_at");
+                    if (createdAt != null) b.setCreatedAt(createdAt.toString());
+                } catch (SQLException ignore) {}
                 bookings.add(b);
             }
         } catch (SQLException e) {
@@ -152,6 +160,10 @@ public class BookingRepository {
                 }
                 
                 b.setStatus(rs.getString("status"));
+                try {
+                    Timestamp createdAt = rs.getTimestamp("created_at");
+                    if (createdAt != null) b.setCreatedAt(createdAt.toString());
+                } catch (SQLException ignore) {}
                 return b;
             }
         } catch (SQLException e) {
