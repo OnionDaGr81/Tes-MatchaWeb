@@ -44,7 +44,7 @@ async function loadNotifications() {
         renderNotifications(allNotifications);
     } catch (error) {
         console.error('Error loading notifications:', error);
-        container.innerHTML = '<div class="empty-state"><p>❌ Gagal memuat notifikasi</p></div>';
+        container.innerHTML = '<div class="empty-state"><p><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 0.5rem; color: var(--danger);"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> Gagal memuat notifikasi</p></div>';
     }
 }
 
@@ -107,7 +107,7 @@ function createNotificationItem(notification) {
         DOM.addClass(item, 'unread');
     }
 
-    const icon = notificationIcons[notification.type] || '🔔';
+    const icon = notificationIcons[notification.type] || '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>';
     const timeAgo = getTimeAgo(new Date(notification.createdAt));
 
     item.innerHTML = `
@@ -175,6 +175,12 @@ function getTimeAgo(date) {
  * Filter notifications
  */
 function filterNotifications(type) {
+    // Make it feel smoother by wrapping in async self-executing or just change to async function
+    // But since it's called from onclick, making it async is fine.
+    _filterNotificationsAsync(type);
+}
+
+async function _filterNotificationsAsync(type) {
     currentFilter = type;
 
     // Update filter UI
@@ -192,6 +198,10 @@ function filterNotifications(type) {
             DOM.removeClass(btn, 'active');
         }
     });
+
+    // Add brief loading state
+    showSkeletonLoaders();
+    await new Promise(resolve => setTimeout(resolve, 200));
 
     renderNotifications(allNotifications);
 }

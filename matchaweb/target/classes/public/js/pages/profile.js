@@ -34,7 +34,7 @@ async function loadUserProfile() {
         const userData = response.data;
 
         // Update profile header
-        const avatar = userData.nama ? userData.nama.charAt(0).toUpperCase() : '👤';
+        const avatar = userData.nama ? userData.nama.charAt(0).toUpperCase() : '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 0.5rem;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
         
         if (userData.profilePhoto) {
             DOM.$('#profile-initial').style.display = 'none';
@@ -43,13 +43,13 @@ async function loadUserProfile() {
             img.src = userData.profilePhoto;
             img.style.display = 'block';
         } else {
-            DOM.$('#profile-initial').textContent = avatar;
+            DOM.$('#profile-initial').innerHTML = avatar;
             DOM.$('#profile-initial').style.display = 'block';
             DOM.$('#profile-image').style.display = 'none';
         }
         
         DOM.$('#profile-name').textContent = userData.nama || 'User';
-        DOM.$('#profile-role').textContent = `${userData.role === 'talent' ? '🎯 Talent' : '👤 Client'}`;
+        DOM.$('#profile-role').innerHTML = `${userData.role === 'talent' ? '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 0.5rem;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg> Talent' : '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 0.5rem;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Client'}`;
         DOM.$('#profile-email').textContent = userData.email || '-';
         DOM.$('#profile-phone').textContent = userData.noTelp || '-';
 

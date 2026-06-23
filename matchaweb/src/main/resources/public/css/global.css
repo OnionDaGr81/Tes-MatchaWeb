@@ -355,36 +355,20 @@ nav.old-nav .nav-right {
 
 /* ===== BUTTON LOADING STATE ===== */
 .btn.btn-loading {
-    color: transparent !important;
     pointer-events: none;
+    opacity: 0.8;
 }
 
 .btn.btn-loading::after {
     content: "";
-    position: absolute;
-    width: 18px;
-    height: 18px;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
     border: 2px solid transparent;
     border-top-color: currentColor;
     border-right-color: currentColor;
     border-radius: 50%;
     animation: buttonSpinner 0.6s linear infinite;
-}
-
-.btn-primary.btn-loading::after,
-.btn-danger.btn-loading::after {
-    border-top-color: #fff;
-    border-right-color: #fff;
-}
-
-.btn-outline.btn-loading::after {
-    border-top-color: var(--primary);
-    border-right-color: var(--primary);
 }
 
 @keyframes buttonSpinner {

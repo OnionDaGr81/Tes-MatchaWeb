@@ -85,7 +85,7 @@ async function loadBookings() {
     } catch (error) {
         console.error('Error loading bookings:', error);
         UIUtils.showAlert('Gagal memuat pesanan', 'error');
-        container.innerHTML = '<div class="empty-state"><h3>❌ Terjadi kesalahan</h3></div>';
+        container.innerHTML = '<div class="empty-state"><h3><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 0.5rem; color: var(--danger);"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> Terjadi kesalahan</h3></div>';
     }
 }
 
@@ -202,7 +202,7 @@ function createBookingCard(booking) {
         if (normalizedStatus === 'pending') {
             actionButtons = `
                 <button class="btn btn-sm btn-primary" onclick="window.location.href='/payment.html?bookingId=${booking.id}'">
-                    💳 Bayar
+                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 0.5rem;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> Bayar
                 </button>
                 <button class="btn btn-sm btn-secondary" onclick="cancelBooking('${booking.id}', this)">
                     Batalkan

@@ -44,7 +44,7 @@ async function loadTalents() {
     } catch (error) {
         console.error('Error loading talents:', error);
         UIUtils.showAlert('Gagal memuat data talent', 'error');
-        container.innerHTML = '<div class="empty-state"><h3>❌ Terjadi kesalahan</h3><p>' + error.message + '</p></div>';
+        container.innerHTML = '<div class="empty-state"><h3><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 0.5rem; color: var(--danger);"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> Terjadi kesalahan</h3><p>' + error.message + '</p></div>';
     }
 }
 
