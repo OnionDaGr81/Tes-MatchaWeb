@@ -121,7 +121,7 @@ function createTalentCard(talent) {
         <div class="talent-body">
             <div class="talent-info">
                 <div class="talent-rating">
-                    ${'⭐'.repeat(Math.floor(rating))} <span>${rating.toFixed(1)} (${reviewCount} review)</span>
+                    ${'<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" style="vertical-align: text-bottom;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'.repeat(Math.floor(rating))} <span>${rating.toFixed(1)} (${reviewCount} review)</span>
                 </div>
             </div>
             
@@ -162,7 +162,7 @@ async function viewTalentDetail(talentId) {
             <h3 style="color: var(--text-primary); font-size: 24px; margin-bottom: 5px;">${talent.nama}</h3>
             <div style="color: var(--primary); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; font-size: 14px; margin-bottom: 10px;">${talent.specialty || 'Professional'}</div>
             <div class="talent-rating" style="justify-content: center;">
-                ${'⭐'.repeat(Math.floor(rating))} <span style="color: var(--text-secondary); margin-left: 5px;">${rating.toFixed(1)} (${reviewCount} ulasan)</span>
+                ${'<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" style="vertical-align: text-bottom;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'.repeat(Math.floor(rating))} <span style="color: var(--text-secondary); margin-left: 5px;">${rating.toFixed(1)} (${reviewCount} ulasan)</span>
             </div>
         </div>
 

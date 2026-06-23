@@ -39,20 +39,37 @@ async function loadTalentDashboard() {
         await new Promise(resolve => setTimeout(resolve, 300));
         
         // Load talent profile, bookings, dan reviews
-        const [profileRes, bookingsRes, reviewsRes] = await Promise.all([
+        const [profileRes, bookingsRes, reviewsRes, servicesRes] = await Promise.all([
             APIService.getUserProfile(user.id).catch(() => ({ data: {} })),
             APIService.getBookings(user.id).catch(() => ({ data: [] })),
-            APIService.getTalentReviews(user.id).catch(() => ({ data: [] }))
+            APIService.getTalentReviews(user.id).catch(() => ({ data: [] })),
+            APIService.getTalentServices(user.id).catch(() => ({ data: [] }))
         ]);
 
-        talentData = profileRes.data;
-        upcomingBookings = bookingsRes.data || [];
+        talentData = profileRes.data || {};
+        const services = servicesRes.data || [];
+        
+        upcomingBookings = (bookingsRes.data || []).map(b => {
+            const service = services.find(s => s.id === b.serviceId) || {};
+            const tarifDasar = service.tarifDasar || service.harga || 0;
+            // Provide values that were previously missing
+            return {
+                ...b,
+                bookingDate: b.waktuMulai,
+                totalAmount: tarifDasar,
+                status: b.status ? b.status.toUpperCase() : 'UNKNOWN'
+            };
+        });
+
+        const reviews = reviewsRes.data || [];
+        
+        talentData.rating = reviews.length > 0 ? reviews.reduce((sum, r) => sum + (r.score || 0), 0) / reviews.length : 0;
 
         // Update stats
         updateStats();
         renderUpcomingBookings(upcomingBookings);
         renderEarningsChart(upcomingBookings);
-        renderServices();
+        renderServices(services);
         renderReviews(reviewsRes.data || []);
     } catch (error) {
         console.error('Error loading dashboard:', error);
@@ -122,12 +139,12 @@ function updateStats() {
     const user = AuthManager.getUser();
 
     // Count bookings by status
-    const pendingCount = upcomingBookings.filter(b => b.status === 'pending').length;
-    const confirmedCount = upcomingBookings.filter(b => b.status === 'confirmed').length;
+    const pendingCount = upcomingBookings.filter(b => b.status === 'PENDING').length;
+    const confirmedCount = upcomingBookings.filter(b => b.status === 'CONFIRMED').length;
 
     // Calculate total earnings
     const totalEarnings = upcomingBookings
-        .filter(b => b.status === 'confirmed' || b.status === 'completed')
+        .filter(b => b.status === 'CONFIRMED' || b.status === 'COMPLETED')
         .reduce((sum, b) => sum + (b.totalAmount || 0), 0);
 
     // Get average rating
@@ -184,8 +201,8 @@ function renderUpcomingBookings(bookings) {
         item.innerHTML = `
             <div class="booking-info">
                 <h4>${booking.clientName || 'Client'}</h4>
-                <p>📅 ${UIUtils.formatDate(booking.waktuMulai)}</p>
-                <p>⏱️ ${booking.duration || 1} jam - ${UIUtils.formatCurrency(booking.totalAmount || 0)}</p>
+                <p><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" style="vertical-align: text-bottom;"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg> ${UIUtils.formatDate(booking.waktuMulai)}</p>
+                <p><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" style="vertical-align: text-bottom;"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> ${booking.duration || 1} jam - ${UIUtils.formatCurrency(booking.totalAmount || 0)}</p>
                 <span class="badge badge-info">${booking.status}</span>
             </div>
             ${actionsHTML}
@@ -207,7 +224,7 @@ function renderEarningsChart(bookings) {
 
     const today = new Date();
     bookings.forEach(booking => {
-        if (booking.status === 'confirmed' || booking.status === 'completed') {
+        if (booking.status === 'CONFIRMED' || booking.status === 'COMPLETED') {
             const bookingDate = new Date(booking.bookingDate);
             const dayDiff = Math.floor((today - bookingDate) / (1000 * 60 * 60 * 24));
             
@@ -233,13 +250,12 @@ function renderEarningsChart(bookings) {
 /**
  * Render services
  */
-async function renderServices() {
+async function renderServices(servicesData) {
     const user = AuthManager.getUser();
     const container = DOM.$('#services-list');
 
     try {
-        const response = await APIService.getTalentServices(user.id);
-        const services = response.data || [];
+        const services = servicesData || [];
 
         if (services.length === 0) {
             container.innerHTML = '<div class="empty-message">Tidak ada layanan</div>';
@@ -290,12 +306,12 @@ function renderReviews(reviews) {
             <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-md);">
                 <strong>${review.clientName || 'Anonymous'}</strong>
                 <span style="color: #ffc107;">
-                    ${'⭐'.repeat(review.rating || 0)}
+                    ${'<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" style="vertical-align: text-bottom;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'.repeat(review.score || 0)}
                 </span>
             </div>
-            <p style="margin-bottom: 0;">${UIUtils.truncate(review.content || '', 100)}</p>
+            <p style="margin-bottom: 0;">${UIUtils.truncate(review.comment || '', 100)}</p>
             <small style="color: var(--text-secondary);">
-                ${UIUtils.formatDate(review.createdAt)}
+                ${review.createdAt ? UIUtils.formatDate(review.createdAt) : ''}
             </small>
         `;
         container.appendChild(item);

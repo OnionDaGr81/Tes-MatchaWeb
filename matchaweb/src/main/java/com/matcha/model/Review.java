@@ -5,6 +5,8 @@ public class Review {
     private String bookingId;
     private int score; // Rating 1-5
     private String comment;
+    private String clientName;
+    private String createdAt;
 
     public Review() {}
 
@@ -20,4 +22,10 @@ public class Review {
 
     public String getComment() { return comment; }
     public void setComment(String comment) { this.comment = comment; }
+
+    public String getClientName() { return clientName; }
+    public void setClientName(String clientName) { this.clientName = clientName; }
+
+    public String getCreatedAt() { return createdAt; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 }

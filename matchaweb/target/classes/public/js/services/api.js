@@ -156,6 +156,10 @@ class APIService {
         return this.request(`/talents/${talentId}/reviews`);
     }
 
+    static getClientReviews(clientId) {
+        return this.request(`/reviews/client/${clientId}`);
+    }
+
     // ===== USER ENDPOINTS =====
     static getUserProfile(userId) {
         return this.request(`/users/${userId}`);

@@ -23,6 +23,7 @@ com\matcha\util\DBUtil.class
 com\matcha\model\DiscountRule.class
 com\matcha\model\User.class
 com\matcha\model\Rating.class
+com\matcha\temp\AlterDB.class
 com\matcha\model\Profile.class
 com\matcha\model\Notification.class
 com\matcha\repository\CatalogRepository.class

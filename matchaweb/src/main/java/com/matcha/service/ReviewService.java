@@ -33,6 +33,11 @@ public class ReviewService {
             throw new Exception("Ulasan hanya bisa diberikan jika status pesanan sudah Selesai (COMPLETED).");
         }
 
+        // Cek apakah booking ini sudah pernah di-review
+        if (reviewRepository.isReviewExists(bookingId)) {
+            throw new Exception("Anda sudah pernah memberikan ulasan untuk pesanan ini.");
+        }
+
         // Siapkan objek Review
         Review review = new Review();
         review.setId("REV-" + UUID.randomUUID().toString().substring(0, 8));
@@ -45,11 +50,26 @@ public class ReviewService {
         if (!success) {
             throw new Exception("Gagal menyimpan ulasan ke database.");
         }
+        
+        // Kirim notifikasi ke talent
+        try {
+            NotificationService notificationService = new NotificationService();
+            String notifMsg = "Anda mendapatkan ulasan baru (" + score + " Bintang) untuk pesanan #" + bookingId;
+            notificationService.sendNotification(booking.getTalentId(), "review", "Ulasan Baru", notifMsg, "/reviews-list.html");
+        } catch (Exception e) {
+            System.err.println("Gagal mengirim notifikasi ulasan: " + e.getMessage());
+        }
+
         return review;
     }
 
     // --- Logika 2: Tarik Semua Ulasan Milik Satu Talent ---
     public List<Review> getTalentReviews(String talentId) {
         return reviewRepository.getReviewsByTalentId(talentId);
+    }
+
+    // --- Logika 3: Tarik Semua Ulasan yang diberikan Client ---
+    public List<Review> getClientReviews(String clientId) {
+        return reviewRepository.getReviewsByClientId(clientId);
     }
 }

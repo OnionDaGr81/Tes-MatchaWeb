@@ -33,6 +33,10 @@ async function loadBookings() {
         const response = await APIService.getUserBookings(user.id);
         const rawBookings = response.data || [];
 
+        // Fetch client reviews to know which bookings have reviews
+        const reviewsRes = await APIService.getClientReviews(user.id).catch(() => ({ data: [] }));
+        const clientReviews = reviewsRes.data || [];
+
         // Fetch additional details for each booking
         const enhancedBookings = await Promise.all(rawBookings.map(async (booking) => {
             // Calculate duration
@@ -63,6 +67,16 @@ async function loadBookings() {
             }
 
             booking.totalAmount = booking.price * booking.duration;
+
+            // Check if review submitted
+            const review = clientReviews.find(r => r.bookingId === booking.id);
+            if (review) {
+                booking.reviewSubmitted = true;
+                booking.reviewId = review.id;
+            } else {
+                booking.reviewSubmitted = false;
+            }
+
             return booking;
         }));
 
@@ -197,12 +211,14 @@ function createBookingCard(booking) {
         } else if (normalizedStatus === 'completed' && !booking.reviewSubmitted) {
             actionButtons = `
                 <button class="btn btn-sm btn-primary" onclick="window.location.href='/review.html?bookingId=${booking.id}'">
-                    ⭐ Beri Review
+                    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" style="vertical-align: text-bottom;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> Beri Review
                 </button>
             `;
         } else if (normalizedStatus === 'completed' && booking.reviewSubmitted) {
             actionButtons = `
-                <span class="badge badge-success">✓ Review Sudah Dikirim</span>
+                <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='/reviews-list.html'">
+                    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 2px;"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Lihat Review
+                </button>
             `;
         }
     }
@@ -248,7 +264,7 @@ function createBookingCard(booking) {
         </div>
         <div class="booking-card-footer">
             <button class="btn btn-sm btn-secondary" onclick="viewBookingDetails('${booking.id}')">
-                👁️ Lihat Detail
+                 Lihat Detail
             </button>
             ${actionButtons}
         </div>

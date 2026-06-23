@@ -27,7 +27,15 @@ public class ReviewController {
 
             int score;
             try {
-                score = Integer.parseInt(body.getOrDefault("score", "0").toString());
+                Object scoreObj = body.get("score");
+                if (scoreObj == null) {
+                    // Try rating if score is not found (just in case)
+                    scoreObj = body.get("rating");
+                }
+                if (scoreObj == null) {
+                    ctx.status(400).json(Map.of("status", "error", "message", "Score tidak ditemukan dalam request.")); return;
+                }
+                score = (int) Double.parseDouble(scoreObj.toString());
             } catch (NumberFormatException e) {
                 ctx.status(400).json(Map.of("status", "error", "message", "Score harus berupa angka.")); return;
             }
@@ -53,6 +61,22 @@ public class ReviewController {
         try {
             String talentId = ctx.pathParam("talentId");
             List<Review> reviews = reviewService.getTalentReviews(talentId);
+            ctx.status(200).json(Map.of(
+                "status", "success",
+                "data", reviews
+            ));
+        } catch (Exception e) {
+            ctx.status(500).json(Map.of(
+                "status", "error",
+                "message", "Terjadi kesalahan saat mengambil ulasan."
+            ));
+        }
+    }
+    // GET /api/clients/{clientId}/reviews
+    public void getClientReviews(Context ctx) {
+        try {
+            String clientId = ctx.pathParam("clientId");
+            List<Review> reviews = reviewService.getClientReviews(clientId);
             ctx.status(200).json(Map.of(
                 "status", "success",
                 "data", reviews

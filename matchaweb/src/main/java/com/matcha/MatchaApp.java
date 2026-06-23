@@ -79,6 +79,7 @@ public class MatchaApp {
                     // --- Reviews ---
                     path("reviews", () -> {
                         post(ctx -> reviewController.createReview(ctx));
+                        get("client/{clientId}", ctx -> reviewController.getClientReviews(ctx));
                     });
 
                     // --- Notifications ---
@@ -93,7 +94,7 @@ public class MatchaApp {
         // === SERVE STATIC HTML FILES MANUAL (kompatibel dengan fat-JAR) ===
         String[] pages = {"index", "login", "app", "catalog", "dashboard-client", "dashboard-talent",
                           "booking-confirmation", "my-bookings", "notifications",
-                          "payment", "profile", "review"};
+                          "payment", "profile", "review", "reviews-list"};
 
         for (String page : pages) {
             final String fileName = page + ".html";
@@ -165,8 +166,28 @@ public class MatchaApp {
             } catch (Exception e) {}
             
             try {
+                stmt.executeUpdate("ALTER TABLE notifications ADD COLUMN type VARCHAR(50) DEFAULT 'system'");
+                System.out.println("✅ Migrasi DB sukses: kolom type ditambahkan ke notifications.");
+            } catch (Exception e) {}
+            
+            try {
+                stmt.executeUpdate("ALTER TABLE notifications ADD COLUMN title VARCHAR(100) DEFAULT 'Notifikasi'");
+                System.out.println("✅ Migrasi DB sukses: kolom title ditambahkan ke notifications.");
+            } catch (Exception e) {}
+            
+            try {
+                stmt.executeUpdate("ALTER TABLE notifications ADD COLUMN action_url VARCHAR(255)");
+                System.out.println("✅ Migrasi DB sukses: kolom action_url ditambahkan ke notifications.");
+            } catch (Exception e) {}
+
+            try {
                 stmt.executeUpdate("ALTER TABLE notifications ADD COLUMN is_read BOOLEAN DEFAULT FALSE");
                 System.out.println("✅ Migrasi DB sukses: kolom is_read ditambahkan ke notifications.");
+            } catch (Exception e) {}
+
+            try {
+                stmt.executeUpdate("ALTER TABLE reviews ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
+                System.out.println("✅ Migrasi DB sukses: kolom created_at ditambahkan ke reviews.");
             } catch (Exception e) {}
         } catch (Exception e) {
             // Abaikan error koneksi saat migrasi

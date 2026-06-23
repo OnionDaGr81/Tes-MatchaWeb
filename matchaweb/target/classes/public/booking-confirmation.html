@@ -180,7 +180,7 @@
 <body>
     <!-- Navbar -->
     <nav>
-        <div class="logo" onclick="window.location.href='/'">🍵 Matcha<span>Companion</span></div>
+        <div class="logo" onclick="window.location.href='/'"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" style="vertical-align: text-bottom;"><path d="M2 21h18v-2H2M20 8h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2v-5c0-1.11-.89-2-2-2zm-4 7c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V5h10v10zm4-4h-2V7h2v4z"/></svg> Matcha<span>Companion</span></div>
         <div class="nav-right">
             <button class="btn btn-outline btn-sm" onclick="window.location.href='/dashboard-client.html'">Dashboard</button>
             <button class="btn btn-danger btn-sm" onclick="logout()">Keluar</button>
@@ -189,7 +189,11 @@
 
     <!-- Main Content -->
     <div class="confirmation-container">
-        <div class="success-icon">✓</div>
+        <div class="success-icon">
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6L9 17l-5-5"/>
+            </svg>
+        </div>
 
         <div class="confirmation-content">
             <h1>Pesanan Berhasil Dikonfirmasi!</h1>

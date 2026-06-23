@@ -109,6 +109,7 @@ class Router {
         html += `<div class="sidebar-link" data-route="my-bookings" onclick="window.location.hash='my-bookings'">Booking Saya</div>`;
         html += `<div class="sidebar-link" data-route="notifications" onclick="window.location.hash='notifications'">Notifikasi</div>`;
         html += `<div class="sidebar-link" data-route="profile" onclick="window.location.hash='profile'">${role === 'client' ? 'Profil' : 'Profil & Layanan'}</div>`;
+        html += `<div class="sidebar-link" data-route="reviews-list" onclick="window.location.hash='reviews-list'">Ulasan</div>`;
         
         nav.innerHTML = html;
     }

@@ -225,14 +225,14 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <div class="sidebar-logo" onclick="window.location.href='/'">🍵 Matcha<span>Companion</span></div>
+                <div class="sidebar-logo" onclick="window.location.href='/'"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" style="vertical-align: text-bottom;"><path d="M2 21h18v-2H2M20 8h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2v-5c0-1.11-.89-2-2-2zm-4 7c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V5h10v10zm4-4h-2V7h2v4z"/></svg> Matcha<span>Companion</span></div>
             </div>
             <div class="sidebar-nav">
                 <div class="sidebar-link" onclick="window.history.back()">Kembali</div>
                 <div class="sidebar-link active" onclick="window.location.href='#'">Berikan Review</div>
             </div>
             <div class="sidebar-footer">
-                <button class="btn btn-outline btn-block" onclick="toggleTheme()" style="margin-bottom: 10px;">🌓 Ganti Tema</button>
+                <button class="btn btn-outline btn-block" onclick="toggleTheme()" style="margin-bottom: 10px;"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" style="vertical-align: text-bottom;"><path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg> Ganti Tema</button>
                 <button class="btn btn-danger btn-block" onclick="logout()">Keluar</button>
             </div>
         </aside>
@@ -264,11 +264,21 @@
             <div class="form-group">
                 <label>Rating Keseluruhan</label>
                 <div class="rating-input">
-                    <span class="star" onclick="setRating(1)">⭐</span>
-                    <span class="star" onclick="setRating(2)">⭐</span>
-                    <span class="star" onclick="setRating(3)">⭐</span>
-                    <span class="star" onclick="setRating(4)">⭐</span>
-                    <span class="star" onclick="setRating(5)">⭐</span>
+                    <span class="star" onclick="setRating(1)">
+                        <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    </span>
+                    <span class="star" onclick="setRating(2)">
+                        <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    </span>
+                    <span class="star" onclick="setRating(3)">
+                        <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    </span>
+                    <span class="star" onclick="setRating(4)">
+                        <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    </span>
+                    <span class="star" onclick="setRating(5)">
+                        <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    </span>
                 </div>
                 <div class="rating-label" id="rating-label">Klik untuk memberi rating</div>
                 <input type="hidden" id="overall-rating" value="0">
@@ -281,44 +291,44 @@
                     <div class="aspect-rating">
                         <label>Profesionalisme</label>
                         <div class="stars" data-aspect="professionalism">
-                            <span class="star-small" onclick="setAspectRating('professionalism', 1)">⭐</span>
-                            <span class="star-small" onclick="setAspectRating('professionalism', 2)">⭐</span>
-                            <span class="star-small" onclick="setAspectRating('professionalism', 3)">⭐</span>
-                            <span class="star-small" onclick="setAspectRating('professionalism', 4)">⭐</span>
-                            <span class="star-small" onclick="setAspectRating('professionalism', 5)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('professionalism', 1)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                            <span class="star-small" onclick="setAspectRating('professionalism', 2)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                            <span class="star-small" onclick="setAspectRating('professionalism', 3)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                            <span class="star-small" onclick="setAspectRating('professionalism', 4)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                            <span class="star-small" onclick="setAspectRating('professionalism', 5)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
                         </div>
                     </div>
 
                     <div class="aspect-rating">
                         <label>Ketepatan Waktu</label>
                         <div class="stars" data-aspect="punctuality">
-                            <span class="star-small" onclick="setAspectRating('punctuality', 1)">⭐</span>
-                            <span class="star-small" onclick="setAspectRating('punctuality', 2)">⭐</span>
-                            <span class="star-small" onclick="setAspectRating('punctuality', 3)">⭐</span>
-                            <span class="star-small" onclick="setAspectRating('punctuality', 4)">⭐</span>
-                            <span class="star-small" onclick="setAspectRating('punctuality', 5)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('punctuality', 1)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                            <span class="star-small" onclick="setAspectRating('punctuality', 2)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                            <span class="star-small" onclick="setAspectRating('punctuality', 3)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                            <span class="star-small" onclick="setAspectRating('punctuality', 4)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                            <span class="star-small" onclick="setAspectRating('punctuality', 5)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
                         </div>
                     </div>
 
                     <div class="aspect-rating">
                         <label>Kualitas Layanan</label>
                         <div class="stars" data-aspect="quality">
-                            <span class="star-small" onclick="setAspectRating('quality', 1)">⭐</span>
-                            <span class="star-small" onclick="setAspectRating('quality', 2)">⭐</span>
-                            <span class="star-small" onclick="setAspectRating('quality', 3)">⭐</span>
-                            <span class="star-small" onclick="setAspectRating('quality', 4)">⭐</span>
-                            <span class="star-small" onclick="setAspectRating('quality', 5)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('quality', 1)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                            <span class="star-small" onclick="setAspectRating('quality', 2)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                            <span class="star-small" onclick="setAspectRating('quality', 3)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                            <span class="star-small" onclick="setAspectRating('quality', 4)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                            <span class="star-small" onclick="setAspectRating('quality', 5)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
                         </div>
                     </div>
 
                     <div class="aspect-rating">
                         <label>Komunikasi</label>
                         <div class="stars" data-aspect="communication">
-                            <span class="star-small" onclick="setAspectRating('communication', 1)">⭐</span>
-                            <span class="star-small" onclick="setAspectRating('communication', 2)">⭐</span>
-                            <span class="star-small" onclick="setAspectRating('communication', 3)">⭐</span>
-                            <span class="star-small" onclick="setAspectRating('communication', 4)">⭐</span>
-                            <span class="star-small" onclick="setAspectRating('communication', 5)">⭐</span>
+                            <span class="star-small" onclick="setAspectRating('communication', 1)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                            <span class="star-small" onclick="setAspectRating('communication', 2)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                            <span class="star-small" onclick="setAspectRating('communication', 3)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                            <span class="star-small" onclick="setAspectRating('communication', 4)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                            <span class="star-small" onclick="setAspectRating('communication', 5)"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
                         </div>
                     </div>
                 </div>
@@ -334,7 +344,7 @@
             <div style="margin: var(--spacing-lg) 0;">
                 <label style="display: flex; align-items: center; margin-bottom: var(--spacing-md);">
                     <input type="checkbox" id="verified-purchase" checked disabled style="margin-right: var(--spacing-sm);">
-                    <span>✓ Ini adalah pembelian terverifikasi</span>
+                    <span> Ini adalah pembelian terverifikasi</span>
                 </label>
                 <label style="display: flex; align-items: center;">
                     <input type="checkbox" id="recommend" style="margin-right: var(--spacing-sm);">

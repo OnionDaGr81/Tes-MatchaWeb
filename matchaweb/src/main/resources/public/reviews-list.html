@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Ulasan - Matcha</title>
+    <link rel="stylesheet" href="/css/global.css">
+    <style>
+        .reviews-container {
+            max-width: 800px;
+            margin: var(--spacing-xl) auto;
+            padding: var(--spacing-lg);
+        }
+
+        .review-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .review-rating {
+            color: var(--warning);
+            font-size: var(--font-size-lg);
+        }
+
+        .review-comment {
+            color: var(--text-secondary);
+            font-size: var(--font-size-md);
+            line-height: 1.5;
+        }
+
+        .review-meta {
+            color: var(--text-muted);
+            font-size: var(--font-size-sm);
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: var(--spacing-2xl);
+            color: var(--text-muted);
+            font-style: italic;
+            border: 1px dashed var(--border);
+            border-radius: var(--radius-lg);
+            background-color: var(--bg-card);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header" style="padding: 15px;">
+                <div class="sidebar-logo" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; cursor: pointer;" onclick="window.location.href='/'">
+                    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" style="vertical-align: text-bottom;"><path d="M2 21h18v-2H2M20 8h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2v-5c0-1.11-.89-2-2-2zm-4 7c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V5h10v10zm4-4h-2V7h2v4z"/></svg> 
+                    <span style="font-weight: 700; color: var(--text-primary);">Matcha</span><span style="color: var(--primary);">Companion</span>
+                </div>
+            </div>
+            <div class="sidebar-nav" id="sidebar-nav-container">
+                <!-- Navigation is rendered dynamically by auth.js based on role -->
+            </div>
+            <div class="sidebar-footer">
+                <button class="btn btn-outline btn-block" onclick="toggleTheme()" style="margin-bottom: 10px;"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" style="vertical-align: text-bottom;"><path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg> Ganti Tema</button>
+                <button class="btn btn-danger btn-block" onclick="logout()">Keluar</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <h3 id="page-title" style="margin: 0; color: var(--text-primary);">Daftar Ulasan</h3>
+                <div class="user-greeting" id="nav-greeting" style="color: var(--text-secondary); font-size: 14px;"></div>
+            </header>
+            
+            <div class="page-content">
+                <div class="reviews-container">
+                    <h2 style="margin-bottom: var(--spacing-lg);">Ulasan Anda</h2>
+                    <div id="reviews-list-container">
+                        <div class="empty-message">Memuat ulasan...</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Theme Logic
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('matcha_theme', newTheme);
+        }
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('matcha_theme') || 'dark');
+    </script>
+    <script src="/js/services/api.js"></script>
+    <script src="/js/utils/helpers.js"></script>
+    <script src="/js/pages/reviews-list.js"></script>
+</body>
+</html>

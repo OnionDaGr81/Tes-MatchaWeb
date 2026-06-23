@@ -10,10 +10,12 @@ public class PaymentService {
     
     private final PaymentRepository paymentRepository;
     private final BookingRepository bookingRepository;
+    private final NotificationService notificationService;
 
     public PaymentService() {
         this.paymentRepository = new PaymentRepository();
         this.bookingRepository = new BookingRepository();
+        this.notificationService = new NotificationService();
     }
 
     // --- Logika 1: Membuat Tagihan (Invoice) ---
@@ -49,10 +51,18 @@ public class PaymentService {
             throw new Exception("Transaksi gagal diproses oleh sistem.");
         }
         
-        // Update status booking ke CONFIRMED
+        // Update status booking ke PAID
         String bookingId = paymentRepository.getBookingIdByInvoiceId(invoiceId);
         if (bookingId != null) {
             bookingRepository.updateBookingStatus(bookingId, "PAID");
+            
+            try {
+                com.matcha.model.Booking b = bookingRepository.getBookingById(bookingId);
+                if(b != null) {
+                    notificationService.sendNotification(b.getTalentId(), "payment", "Pembayaran Diterima", "Pembayaran telah diterima! Pesanan " + b.getId().substring(0,8) + " siap untuk diproses.", "/dashboard-talent.html");
+                    notificationService.sendNotification(b.getClientId(), "payment", "Pembayaran Berhasil", "Pembayaran untuk pesanan " + b.getId().substring(0,8) + " telah berhasil dikonfirmasi.", "/my-bookings.html");
+                }
+            } catch(Exception e) { e.printStackTrace(); }
         }
         
         return payment;

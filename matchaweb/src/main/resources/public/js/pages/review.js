@@ -12,11 +12,11 @@ let aspectRatings = {
 
 const ratingLabels = {
     0: 'Klik untuk memberi rating',
-    1: 'Sangat Buruk 😞',
-    2: 'Kurang Memuaskan 😐',
-    3: 'Cukup Baik 👍',
-    4: 'Sangat Baik 😊',
-    5: 'Luar Biasa! 🌟'
+    1: 'Sangat Buruk',
+    2: 'Kurang Memuaskan',
+    3: 'Cukup Baik',
+    4: 'Sangat Baik',
+    5: 'Luar Biasa!'
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -48,7 +48,8 @@ async function loadBookingDetails(bookingId) {
         const booking = response.data;
 
         // Display talent info
-        const talent = booking.talent || {};
+        const talentRes = await APIService.getTalentDetail(booking.talentId).catch(() => ({ data: {} }));
+        const talent = talentRes.data || {};
         const avatar = talent.nama ? talent.nama.charAt(0).toUpperCase() : 'T';
 
         DOM.$('#talent-info').innerHTML = `
@@ -145,8 +146,8 @@ async function submitReview(e) {
             bookingId,
             talentId,
             clientId: user.id,
-            rating: overallRating,
-            content: reviewContent,
+            score: overallRating,
+            comment: reviewContent,
             professionalism: aspectRatings.professionalism || overallRating,
             punctuality: aspectRatings.punctuality || overallRating,
             quality: aspectRatings.quality || overallRating,

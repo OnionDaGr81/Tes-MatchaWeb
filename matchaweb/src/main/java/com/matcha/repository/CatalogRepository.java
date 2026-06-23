@@ -16,7 +16,9 @@ public class CatalogRepository {
 
         StringBuilder sql = new StringBuilder(
             "SELECT u.id, u.nama, u.role, u.profile_photo, p.bio, " +
-            "(SELECT MIN(tarif_dasar) FROM services s WHERE s.talent_id = u.id) as pricePerHour " +
+            "(SELECT MIN(tarif_dasar) FROM services s WHERE s.talent_id = u.id) as pricePerHour, " +
+            "(SELECT AVG(r.score) FROM reviews r JOIN bookings b ON r.booking_id = b.id WHERE b.talent_id = u.id) as rating, " +
+            "(SELECT COUNT(r.id) FROM reviews r JOIN bookings b ON r.booking_id = b.id WHERE b.talent_id = u.id) as reviewCount " +
             "FROM users u " +
             "LEFT JOIN profiles p ON u.id = p.talent_id " +
             "WHERE u.role = 'talent'"
@@ -49,6 +51,12 @@ public class CatalogRepository {
                 
                 double price = rs.getDouble("pricePerHour");
                 talent.put("pricePerHour", rs.wasNull() ? 0 : price);
+
+                double rating = rs.getDouble("rating");
+                talent.put("rating", rs.wasNull() ? 0 : rating);
+
+                int reviewCount = rs.getInt("reviewCount");
+                talent.put("reviewCount", rs.wasNull() ? 0 : reviewCount);
                 
                 talents.add(talent);
             }

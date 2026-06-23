@@ -13,8 +13,12 @@ public class NotificationService {
         this.notificationRepository = new NotificationRepository();
     }
 
-    // --- Logika 1: Kirim Notifikasi ---
+    // --- Logika 1: Kirim Notifikasi (Overloaded) ---
     public Notification sendNotification(String recipientId, String message) throws Exception {
+        return sendNotification(recipientId, "system", "Notifikasi", message, null);
+    }
+
+    public Notification sendNotification(String recipientId, String type, String title, String message, String actionUrl) throws Exception {
         if (recipientId == null || recipientId.isEmpty() || message == null || message.isEmpty()) {
             throw new Exception("ID Penerima dan isi pesan tidak boleh kosong.");
         }
@@ -22,7 +26,10 @@ public class NotificationService {
         Notification notif = new Notification();
         notif.setId("NOTIF-" + UUID.randomUUID().toString().substring(0, 8)); // Generate ID unik
         notif.setRecipientId(recipientId);
+        notif.setType(type);
+        notif.setTitle(title);
         notif.setMessage(message);
+        notif.setActionUrl(actionUrl);
 
         boolean success = notificationRepository.createNotification(notif);
         if (!success) {
