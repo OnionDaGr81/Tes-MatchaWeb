@@ -22,7 +22,7 @@ public class BookingService {
         if (!isAvailable) {
             throw new Exception("Maaf, Talent sudah dibooking pada rentang waktu tersebut.");
         }
-        booking.setId(UUID.randomUUID().toString());
+        booking.setId("ORD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         booking.setStatus("PENDING");
         boolean success = bookingRepository.createBooking(booking);
         if (success) {

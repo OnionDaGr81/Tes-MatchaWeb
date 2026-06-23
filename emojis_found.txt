@@ -1,9 +1,0 @@
-D:\Tes-MatchaWeb\matchaweb\src\main\resources\public\booking-confirmation.html: {'📞', '📊', '🔍', '📧', '📋'}
-D:\Tes-MatchaWeb\matchaweb\src\main\resources\public\catalog.html: {'✕'}
-D:\Tes-MatchaWeb\matchaweb\src\main\resources\public\my-bookings.html: {'✕'}
-D:\Tes-MatchaWeb\matchaweb\src\main\resources\public\payment.html: {'📋', '💳', '🏦', '📱'}
-D:\Tes-MatchaWeb\matchaweb\src\main\resources\public\profile.html: {'📷', '✕'}
-D:\Tes-MatchaWeb\matchaweb\src\main\resources\public\js\pages\catalog.js: {'❌'}
-D:\Tes-MatchaWeb\matchaweb\src\main\resources\public\js\pages\my-bookings.js: {'❌', '💳'}
-D:\Tes-MatchaWeb\matchaweb\src\main\resources\public\js\pages\notifications.js: {'❌', '🔔'}
-D:\Tes-MatchaWeb\matchaweb\src\main\resources\public\js\pages\profile.js: {'👤', '🎯'}
