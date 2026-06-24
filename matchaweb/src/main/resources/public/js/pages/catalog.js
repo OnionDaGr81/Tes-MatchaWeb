@@ -209,6 +209,52 @@ async function viewTalentDetail(talentId) {
         `;
     }
 
+    try {
+        const reviewResponse = await APIService.getTalentReviews(talentId);
+        const reviews = reviewResponse.data || [];
+        
+        let reviewHtml = `
+        <div style="background: var(--bg-input); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h4 style="color: var(--text-primary); margin-bottom: 15px; font-size: 16px;">Ulasan Talent</h4>
+        `;
+        
+        if (reviews.length > 0) {
+            reviewHtml += '<div style="display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto;">';
+            reviews.forEach(review => {
+                let starsHtml = '';
+                for (let i = 1; i <= 5; i++) {
+                    if (i <= review.score) {
+                        starsHtml += '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" style="color: #FFD700; vertical-align: text-bottom;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+                    } else {
+                        starsHtml += '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-secondary); vertical-align: text-bottom;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+                    }
+                }
+                reviewHtml += `
+                    <div style="padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span style="font-size: 12px; color: var(--text-secondary);">Booking ID: ${review.bookingId}</span>
+                            <span>${starsHtml}</span>
+                        </div>
+                        <p style="color: var(--text-primary); margin: 0; font-size: 14px; font-style: italic;">"${review.comment || 'Tidak ada komentar'}"</p>
+                    </div>
+                `;
+            });
+            reviewHtml += '</div>';
+        } else {
+            reviewHtml += '<p style="color: var(--text-secondary); font-style: italic;">Belum ada ulasan.</p>';
+        }
+        reviewHtml += '</div>';
+        bodyHtml += reviewHtml;
+    } catch (e) {
+        console.error('Error fetching reviews:', e);
+        bodyHtml += `
+        <div style="background: var(--bg-input); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h4 style="color: var(--text-primary); margin-bottom: 10px; font-size: 16px;">Ulasan Talent</h4>
+            <p style="color: var(--text-secondary);">Gagal memuat ulasan.</p>
+        </div>
+        `;
+    }
+
     bodyHtml += `
         <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 20px;">
             <div>
